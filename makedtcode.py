@@ -1,16 +1,15 @@
 import pickle
 import graphviz
 import numpy as np
-from sklearn import tree
-clf = pickle.load( open( "./cache/clf.p", "rb" ) )
-# scaler = pickle.load(open( "./cache/scaler.p", "rb" ))
-
-
 from sklearn.tree import _tree
+from sklearn import tree
 
 class RandomForestCodeGenerator:
-    def __init__(self, forest_clf):
+    def __init__(self, forest_clf, feature_num, scaler_mean, scaler_std):
         self.forest_clf = forest_clf
+        self.feature_num = feature_num
+        self.scaler_mean = scaler_mean
+        self.scaler_std = scaler_std
         self.function_prefix = "dt"
 
     def __tree_to_code_py(self, tree, funname, feature_array_name):
@@ -53,8 +52,7 @@ class RandomForestCodeGenerator:
     def __tree_to_code_cpp(self, tree, funname, feature_array_name):
         code = ""
         tree_ = tree.tree_
-        array_num = 568 #TODO: set appropriate value
-        code += "clf_res {}(int {}[{}]){{\n".format(funname, feature_array_name, array_num)
+        code += "clf_res {}(int {}[{}]){{\n".format(funname, feature_array_name, self.feature_num)
         def recurse(node, depth):
             rec_code = ""
             indent = "  " * depth
@@ -62,6 +60,9 @@ class RandomForestCodeGenerator:
                 # name = feature_name[node]
                 name = '{}[{}]'.format(feature_array_name, tree_.feature[node])
                 threshold = tree_.threshold[node]
+                # unscaler threshold
+                threshold = threshold * self.scaler_std[node] + self.scaler_mean[node]
+
                 rec_code += "{}if ({} <= {}){{\n".format(indent, name, threshold)
                 rec_code += recurse(tree_.children_left[node], depth + 1)
                 rec_code += ("{}}}else{{  // if {} > {}\n".format(indent, name, threshold))
@@ -98,8 +99,12 @@ class RandomForestCodeGenerator:
     def run_generated_code(self):
         pass
 
+clf = pickle.load(open( "./cache/clf.p", "rb" ))
+scaler_mean = pickle.load(open( "./cache/scaler_mean.p", "rb" ))
+scaler_std = pickle.load(open( "./cache/scaler_std.p", "rb" ))
+feature_num = len(scaler_std)
 
-gen = RandomForestCodeGenerator(clf)
+gen = RandomForestCodeGenerator(clf, feature_num, scaler_mean, scaler_std)
 cppcode = gen.forest_to_code_cpp()
 with open('./cpp/forest.h', mode='w') as f:
     f.write(cppcode)
