@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <vector>
 
 #include <opencv2/opencv.hpp>
@@ -8,47 +9,71 @@
 
 #include "feature.h"
 #include "forest.h"
-
 using namespace std;
 using namespace cv;
 
 int main(int argc, const char* argv[])
 {
-  Mat img = cv::imread("../crop_test/crop/image106.png", 1);
-
-  // 画像の読み込みに失敗したらエラー終了する
-  if(img.empty())
-  {
-    std::cerr << "Failed to open image file." << std::endl;
-    return -1; 
-  }
   //row is height
   //cols is width
   //calculate features
-  cv::Size spatial_size(8, 8);
-  Mat resized_rgb, resized_hls;
-  cv::resize(img, resized_rgb, spatial_size);
-  cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
-  
-  vector<int> spatial_hls_feature = ravel(resized_hls);
-  vector<int> spatial_rgb_feature = ravel(resized_rgb);
+  long double sum1, sum2, sum3, sum4, sum5, sum6, sum7;
+  sum1 = sum2 = sum3 = sum4 = sum5 = sum6 = sum7 = 0;
+  std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
+  for(int i = 0; i < 126; i++){
+    Mat img = cv::imread("../crop_test/crop/image" + to_string(i) + ".png", 1);
+    t1 = std::chrono::system_clock::now();
+    cv::Size spatial_size(8, 8);
+    Mat resized_rgb, resized_hls;
+    cv::resize(img, resized_rgb, spatial_size);
+    cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
+    
+    t2 = std::chrono::system_clock::now();
+    int feature[456] = {0};
+    ravel(resized_hls, feature);
+    ravel(resized_rgb, feature + 192);
 
-  cv::Mat hls;
-  cv::cvtColor(img, hls, CV_RGB2HLS);
-  vector<int> rgb_hist = hist(img);
-  vector<int> hls_hist = hist(hls);
+    t3 = std::chrono::system_clock::now();
+    cv::Mat hls;
+    cv::cvtColor(img, hls, CV_RGB2HLS);
+    t4 = std::chrono::system_clock::now();
+    hist(img, feature + 192 * 2);
+    hist(hls, feature + 192 * 2 + 36);
 
-  vector<int> single_feature;
-  single_feature.insert(single_feature.end(), spatial_hls_feature.begin(), spatial_hls_feature.end());
-  single_feature.insert(single_feature.end(), spatial_rgb_feature.begin(), spatial_rgb_feature.end());
-  single_feature.insert(single_feature.end(), hls_hist.begin(), hls_hist.end());
-  single_feature.insert(single_feature.end(), rgb_hist.begin(), rgb_hist.end());
-  
-  int a[456];
-  for(int i = 0; i < 456; i++) a[i] = single_feature[i];
-  clf_res res = randomforest_classifier(a);
-  cout << res.not_red << ", " << res.red << endl;
+    t5 = std::chrono::system_clock::now();
+    // vector<int> single_feature;
+    // single_feature.insert(single_feature.end(), spatial_hls_feature.begin(), spatial_hls_feature.end());
+    // single_feature.insert(single_feature.end(), spatial_rgb_feature.begin(), spatial_rgb_feature.end());
+    // single_feature.insert(single_feature.end(), hls_hist.begin(), hls_hist.end());
+    // single_feature.insert(single_feature.end(), rgb_hist.begin(), rgb_hist.end());
+    
+    t6 = std::chrono::system_clock::now();
+    // int a[456];
+    // for(int j = 0; j < 456; j++){
+    //   cout << feature[j] << ", ";
+    // } 
+    // cout << endl;
+    clf_res res = randomforest_classifier(feature);
+    float red_proba = (float)res.red / (res.not_red + res.red);
+    if(red_proba >= 0.65) cout << i << " : " << red_proba << endl;
+    t7 = std::chrono::system_clock::now();
 
+    sum1 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+    sum2 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t3-t2).count();
+    sum3 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t4-t3).count();
+    sum4 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t5-t4).count();
+    sum5 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t6-t5).count();
+    sum6 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t7-t6).count();
+    sum7 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t7-t1).count();
+     
+  }
+  cout << "ravel preprocessing time:" << sum1/1000 << "[sec]" << endl;
+  cout << "ravel time:" << sum2/1000 << "[sec]" << endl;
+  cout << "hist preprocessing time:" << sum3/1000 << "[sec]" << endl;
+  cout << "hist time:" << sum4/1000 << "[sec]" << endl;
+  cout << "memory operation time:" << sum5/1000 << "[sec]" << endl;
+  cout << "dtree time:" << sum6/1000 << "[sec]" << endl;
+  cout << "all time:" << sum7/1000 << "[sec]" << endl;
 
   // forest();
   
