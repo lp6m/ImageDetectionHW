@@ -10,6 +10,7 @@ class RandomForestCodeGenerator:
         self.feature_num = feature_num
         self.scaler_mean = scaler_mean
         self.scaler_std = scaler_std
+        self.estimator_num = len(self.forest_clf.estimators_)
         self.function_prefix = "dt"
 
     def __tree_to_code_py(self, tree, funname, feature_array_name):
@@ -38,7 +39,7 @@ class RandomForestCodeGenerator:
     def forest_to_code_py(self):
         code = ""
         #generate code for each decision tree
-        for i in range(len(self.forest_clf.estimators_)):
+        for i in range(self.estimator_num):
             funname = self.function_prefix + str(i)
             code += self.__tree_to_code_py(clf.estimators_[i], funname, 'X') + "\n"
 
@@ -79,6 +80,7 @@ class RandomForestCodeGenerator:
         return code
 
     def forest_to_code_cpp(self):
+        #generate code to define struct and randomforest_classifier function
         code = ""
         code += "struct clf_res{\n"
         code += "  int not_red;\n"
@@ -86,8 +88,23 @@ class RandomForestCodeGenerator:
         code += "  clf_res(int x, int y) : not_red(x), red(y){}\n"
         code += "};\n\n"
 
+        code += "const int estimator_num = {};\n".format(self.estimator_num);
+        for i in range(self.estimator_num):
+            code += "clf_res {}{}(int X[{}]);\n".format(self.function_prefix, i, self.feature_num)
+        code += "clf_res (*estimators[])(int*) = {{{}}};\n\n".format(", ".join(["dt{}".format(i) for i in range(self.estimator_num)]))
+
+        code += "clf_res randomforest_classifier(int X[{}]){{\n".format(self.feature_num)
+        code += "  clf_res rst = clf_res(0, 0);\n"
+        code += "  for(int i = 0; i < estimator_num; i++){\n"
+        code += "    clf_res tmpres = (*estimators[i])(X);\n"
+        code += "    rst.not_red += tmpres.not_red;\n"
+        code += "    rst.red += tmpres.red;\n"
+        code += "  }\n"
+        code += "  return rst;\n"
+        code += "}\n\n"
+
         #generate code for each decision tree
-        for i in range(len(self.forest_clf.estimators_)):
+        for i in range(self.estimator_num):
             funname = self.function_prefix + str(i)
             code += self.__tree_to_code_cpp(clf.estimators_[i], funname, 'X') + "\n"
 
