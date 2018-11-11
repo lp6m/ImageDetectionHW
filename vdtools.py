@@ -273,27 +273,12 @@ class WindowFinder(object):
         # Define the labels vector
         y = np.hstack((np.zeros(len(notred_features)), np.ones(len(red_features))))
 
-        #TODO: save X_scaler as a self variable, pickle along with the classifier and features.
-
-        print('testing scaler...')
-        scaled_X_self = X_scaler.transform(np.array(X[0]).reshape(1, -1))
-        total = 0
-        average = 0
-        for x in X:
-            total += 1
-            average += (x - average) / total
+        # Pickle scaler parameter
         mean = np.nanmean(np.array(X), axis=0)
         std = np.nanstd(np.array(X), axis=0)
-        print('mean', len(mean))
-        myX = (np.array(X[0]) - mean) / std
-        # print('scaled_X', type(scaled_X[0]), scaled_X[0].shape)
-        print('X[0]', X[0][0])
-        print('scaled_X_self', type(scaled_X_self[0]), scaled_X_self[0][0])
-        print('scaled_X_scratch', myX[0])
-        if np.array_equal(scaled_X[0], scaled_X_self[0]):
-            print('scaler is OK!!')
-        else:
-            print('scaler is WRONG!!')
+        pickle.dump(mean, open( "./cache/scaler_mean.p", "wb"))
+        pickle.dump(std, open( "./cache/scaler_std.p", "wb"))
+
         return scaled_X, y, X_scaler
 
     # Define a function to return HOG features and visualization
