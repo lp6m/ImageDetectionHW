@@ -10,7 +10,7 @@ def generate_window_candidate():
 	print(windows_list)
 	image = cv2.imread('image_0299.png')
 	for i, window in enumerate(windows_list):
-		crop = image[window[0][0]: window[1][0], window[0][1]:window[1][1]]
+		crop = image[window[0][1]: window[1][1], window[0][0]:window[1][0]]
 		name = 'crop_test/crop/image' + str(i) + '.png'
 		cv2.imwrite(name, crop)
 
