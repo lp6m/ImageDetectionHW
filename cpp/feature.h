@@ -14,7 +14,7 @@ const int hist_bins = 12;
 const float thresh[hist_bins] = {0, 256.0/12.0, 2.0*256.0/12.0, 3.0*256.0/12.0, 4.0*256.0/12.0, 5.0*256.0/12.0, 6.0*256.0/12.0,
 7.0*256.0/12.0, 8.0*256.0/12.0, 9.0*256.0/12.0, 10.0*256.0/12.0, 11.0*256.0/12.0};
 
-void hog(cv::Mat img){
+void hog(cv::Mat img, double *dst){
   const int s_row = 32;//img.rows;
   const int s_col = 64;//img.cols;
   const int c_row = 12;
@@ -28,7 +28,7 @@ void hog(cv::Mat img){
   //calculate gradient
   double g_col[32][64] = {0};
   double g_row[32][64] = {0};
-  cout << img.cols << " " << img.rows << endl;//64, 32
+  // cout << img.cols << " " << img.rows << endl;//64, 32
   for(int x = 0; x < img.cols; x++){
     for(int y = 2; y < img.rows; y++){
       g_row[y-1][x] = double(img.ptr<uchar>(y)[x]) - double(img.ptr<uchar>(y-2)[x]);
@@ -49,7 +49,7 @@ void hog(cv::Mat img){
       orient[y][x] = tmporient < 0 ? tmporient + 180.0 : tmporient;
     }
   }
-  cout << orient[10][10] << endl;
+  // cout << orient[10][10] << endl;
   double threshold[orientations+1] = {0, 22.5, 45.0, 67.5, 90.0, 112.5, 135.0, 157.5, 180.0};
   //make histogram for each block
   double orientation_histogram[n_cells_row][n_cells_col][orientations] = {0};
@@ -140,7 +140,7 @@ void hog(cv::Mat img){
   }
 
   //ravel each feature value
-  double hog_feature[n_blocks_row * n_blocks_col * b_row * b_col* orientations];
+  // double hog_feature[n_blocks_row * n_blocks_col * b_row * b_col* orientations];
   int cnt = 0;
   for(int y = 0; y < n_blocks_row; y++){
     for(int x = 0; x < n_blocks_col; x++){
@@ -149,16 +149,15 @@ void hog(cv::Mat img){
           for(int i = 0; i < orientations; i++){
             int cell_y = y + yy;
             int cell_x = x + xx;
-            hog_feature[cnt++] = normalized_blocks[y][x][cell_y][cell_x][i];
+            dst[cnt++] = normalized_blocks[y][x][cell_y][cell_x][i];
           }
         }
       }
     }
   }
-
-  return hog_feature;
 }
-void ravel(cv::Mat img, int* dst){
+// void ravel(cv::Mat img, int* dst){
+void ravel(cv::Mat img, double* dst){
   vector<int> rst;
   for(int y = 0; y < img.rows; y++){
     for(int x = 0; x < img.cols; x++){
@@ -170,7 +169,8 @@ void ravel(cv::Mat img, int* dst){
   }
 }
 
-void hist(cv::Mat img, int* dst){
+// void hist(cv::Mat img, int* dst){
+void hist(cv::Mat img, double* dst){
   // vector<int> rst(hist_bins*3);
   // int range_min = 0;
   // int range_max = 256;//[0,256)
