@@ -22,28 +22,30 @@ int main(int argc, const char* argv[])
   std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
   for(int i = 0; i < 126; i++){
     Mat img = cv::imread("../crop_test/crop/image" + to_string(i) + ".png", 1);
+    Mat resized_img;
+    cv::resize(img, resized_img, cv::Size(64 ,32)); //height = yrange = 64, width = xrange = 32
+
     t1 = std::chrono::system_clock::now();
     cv::Size spatial_size(8, 8);
-    Mat resized_rgb, resized_hls;
-    cv::resize(img, resized_rgb, spatial_size);
-    cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
+    Mat spatial_rgb, spatial_hls;
+    cv::resize(resized_img, spatial_rgb, spatial_size);
+    cv::cvtColor(spatial_rgb, spatial_hls, CV_RGB2HLS);
     
     t2 = std::chrono::system_clock::now();
     double feature[584] = {0};
-    ravel(resized_hls, feature);
-    ravel(resized_rgb, feature + 192);
+    ravel(spatial_hls, feature);
+    ravel(spatial_rgb, feature + 192);
 
     t3 = std::chrono::system_clock::now();
     cv::Mat hls;
-    cv::cvtColor(img, hls, CV_RGB2HLS);
+    cv::cvtColor(resized_img, hls, CV_RGB2HLS);
     t4 = std::chrono::system_clock::now();
-    hist(img, feature + 192 * 2);
+    hist(resized_img, feature + 192 * 2);
     hist(hls, feature + 192 * 2 + 36);
 
     t5 = std::chrono::system_clock::now();
-    Mat resized_rgb2, gray;
-    cv::resize(img, resized_rgb2, cv::Size(64 ,32)); //height = yrange = 64, width = xrange = 32
-    cv::cvtColor(resized_rgb2, gray, CV_RGB2GRAY);
+    cv::Mat gray;
+    cv::cvtColor(resized_img, gray, CV_RGB2GRAY);
     hog(gray, feature + 192 * 2 + 36 * 2);
     // cout << feature[583] << endl;
     // vector<int> single_feature;
@@ -63,22 +65,38 @@ int main(int argc, const char* argv[])
     if(red_proba >= 0.65) cout << i << " : " << red_proba << endl;
     t7 = std::chrono::system_clock::now();
 
-    sum1 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
-    sum2 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t3-t2).count();
-    sum3 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t4-t3).count();
-    sum4 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t5-t4).count();
-    sum5 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t6-t5).count();
-    sum6 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t7-t6).count();
-    sum7 += (long double)std::chrono::duration_cast<std::chrono::milliseconds>(t7-t1).count();
+    double tmp1 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count();
+    double tmp2 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count();
+    double tmp3 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count();
+    double tmp4 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t5-t4).count();
+    double tmp5 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t6-t5).count();
+    double tmp6 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t7-t6).count();
+    double tmp7 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t7-t1).count();
+    sum1 += tmp1;
+    sum2 += tmp2;
+    sum3 += tmp3;
+    sum4 += tmp4;
+    sum5 += tmp5;
+    sum6 += tmp6;
+    sum7 += tmp7;
+    cout << "tmp1:" << fixed << setprecision(10) << tmp1 << endl;
+    cout << "tmp2:" << tmp2 << endl;
+    cout << "tmp3:" << tmp3 << endl;
+    cout << "tmp4:" << tmp4 << endl;
+    cout << "tmp5:" << tmp5 << endl;
+    cout << "tmp6:" << tmp6 << endl;
+    cout << "tmp7:" << tmp7 << endl;
+
+    cout << endl;
      
   }
-  cout << "ravel preprocessing time:" << sum1/1000 << "[sec]" << endl;
-  cout << "ravel time:" << sum2/1000 << "[sec]" << endl;
-  cout << "hist preprocessing time:" << sum3/1000 << "[sec]" << endl;
-  cout << "hist time:" << sum4/1000 << "[sec]" << endl;
-  cout << "hog time:" << sum5/1000 << "[sec]" << endl;
-  cout << "dtree time:" << sum6/1000 << "[sec]" << endl;
-  cout << "all time:" << sum7/1000 << "[sec]" << endl;
+  cout << "ravel preprocessing time:" << sum1/1000 << "[milisec]" << endl;
+  cout << "ravel time:" << sum2/1000 << "[milisec]" << endl;
+  cout << "hist preprocessing time:" << sum3/1000 << "[milisec]" << endl;
+  cout << "hist time:" << sum4/1000 << "[milisec]" << endl;
+  cout << "hog time:" << sum5/1000 << "[milisec]" << endl;
+  cout << "dtree time:" << sum6/1000 << "[milisec]" << endl;
+  cout << "all time:" << sum7/1000 << "[milisec]" << endl;
 
   // forest();
   
