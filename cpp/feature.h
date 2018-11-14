@@ -11,8 +11,8 @@ using namespace std;
 using namespace cv;
 
 const int hist_bins = 12;
-const float thresh[hist_bins] = {0, 256.0/12.0, 2.0*256.0/12.0, 3.0*256.0/12.0, 4.0*256.0/12.0, 5.0*256.0/12.0, 6.0*256.0/12.0,
-7.0*256.0/12.0, 8.0*256.0/12.0, 9.0*256.0/12.0, 10.0*256.0/12.0, 11.0*256.0/12.0};
+const float thresh[hist_bins+1] = {0, 256.0/12.0, 2.0*256.0/12.0, 3.0*256.0/12.0, 4.0*256.0/12.0, 5.0*256.0/12.0, 6.0*256.0/12.0,
+7.0*256.0/12.0, 8.0*256.0/12.0, 9.0*256.0/12.0, 10.0*256.0/12.0, 11.0*256.0/12.0, 12.0*256.0/12.0};
 
 void hog(cv::Mat img, double *dst){
   const int s_row = 32;//img.rows;
@@ -182,15 +182,11 @@ void hist(cv::Mat img, double* dst){
       for(int i = 0; i < hist_bins; i++){
         cv::Vec<unsigned char, 3> pix = img.ptr<cv::Vec3b>(y)[x];
         //channel1
-        if(i != hist_bins - 1 && thresh[i] <= (int)pix[0] && (int)pix[0] < thresh[i+1]) dst[i]++;
-        else if(i == hist_bins - 1 && thresh[i] <= (int)pix[0]) dst[i]++;
+        if(thresh[i] <= (int)pix[0] && (int)pix[0] < thresh[i+1]) dst[i]++;
         //channel2
-        if(i != hist_bins - 1 && thresh[i] <= (int)pix[1] && (int)pix[1] < thresh[i+1]) dst[i+hist_bins]++;
-        else if(i == hist_bins - 1 && thresh[i] <= (int)pix[1]) dst[i+hist_bins]++;
+        if(thresh[i] <= (int)pix[1] && (int)pix[1] < thresh[i+1]) dst[i+hist_bins]++;
         //channel3
-        if(i != hist_bins - 1 && thresh[i] <= (int)pix[2] && (int)pix[2] < thresh[i+1]) dst[i+hist_bins*2]++;
-        else if(i == hist_bins - 1 && thresh[i] <= (int)pix[2]) dst[i+hist_bins*2]++;
-        
+        if(thresh[i] <= (int)pix[2] && (int)pix[2] < thresh[i+1]) dst[i+hist_bins*2]++;
       }
     }
   }
