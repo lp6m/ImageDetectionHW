@@ -29,7 +29,7 @@ int main(int argc, const char* argv[])
     cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
     
     t2 = std::chrono::system_clock::now();
-    int feature[456] = {0};
+    double feature[584] = {0};
     ravel(resized_hls, feature);
     ravel(resized_rgb, feature + 192);
 
@@ -41,6 +41,11 @@ int main(int argc, const char* argv[])
     hist(hls, feature + 192 * 2 + 36);
 
     t5 = std::chrono::system_clock::now();
+    Mat resized_rgb2, gray;
+    cv::resize(img, resized_rgb2, cv::Size(64 ,32)); //height = yrange = 64, width = xrange = 32
+    cv::cvtColor(resized_rgb2, gray, CV_RGB2GRAY);
+    hog(gray, feature + 192 * 2 + 36 * 2);
+    // cout << feature[583] << endl;
     // vector<int> single_feature;
     // single_feature.insert(single_feature.end(), spatial_hls_feature.begin(), spatial_hls_feature.end());
     // single_feature.insert(single_feature.end(), spatial_rgb_feature.begin(), spatial_rgb_feature.end());
@@ -71,7 +76,7 @@ int main(int argc, const char* argv[])
   cout << "ravel time:" << sum2/1000 << "[sec]" << endl;
   cout << "hist preprocessing time:" << sum3/1000 << "[sec]" << endl;
   cout << "hist time:" << sum4/1000 << "[sec]" << endl;
-  cout << "memory operation time:" << sum5/1000 << "[sec]" << endl;
+  cout << "hog time:" << sum5/1000 << "[sec]" << endl;
   cout << "dtree time:" << sum6/1000 << "[sec]" << endl;
   cout << "all time:" << sum7/1000 << "[sec]" << endl;
 
