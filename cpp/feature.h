@@ -11,8 +11,7 @@ using namespace std;
 using namespace cv;
 
 const int hist_bins = 12;
-const float thresh[hist_bins+1] = {0, 256.0/12.0, 2.0*256.0/12.0, 3.0*256.0/12.0, 4.0*256.0/12.0, 5.0*256.0/12.0, 6.0*256.0/12.0,
-7.0*256.0/12.0, 8.0*256.0/12.0, 9.0*256.0/12.0, 10.0*256.0/12.0, 11.0*256.0/12.0, 12.0*256.0/12.0};
+const unsigned char thresh[hist_bins] = {0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234};
 
 void hog(cv::Mat img, double *dst){
   const int s_row = 32;//img.rows;
@@ -181,12 +180,44 @@ void hist(cv::Mat img, double* dst){
     for(int x = 0; x < img.cols; x++){
       for(int i = 0; i < hist_bins; i++){
         cv::Vec<unsigned char, 3> pix = img.ptr<cv::Vec3b>(y)[x];
-        //channel1
-        if(thresh[i] <= (int)pix[0] && (int)pix[0] < thresh[i+1]) dst[i]++;
-        //channel2
-        if(thresh[i] <= (int)pix[1] && (int)pix[1] < thresh[i+1]) dst[i+hist_bins]++;
-        //channel3
-        if(thresh[i] <= (int)pix[2] && (int)pix[2] < thresh[i+1]) dst[i+hist_bins*2]++;
+        if(thresh[0] <= pix[0] && pix[0] < thresh[1]) dst[0]++;
+        else if(thresh[1] <= pix[0] && pix[0] < thresh[2]) dst[1]++;
+        else if(thresh[2] <= pix[0] && pix[0] < thresh[3]) dst[2]++;
+        else if(thresh[3] <= pix[0] && pix[0] < thresh[4]) dst[3]++;
+        else if(thresh[4] <= pix[0] && pix[0] < thresh[5]) dst[4]++;
+        else if(thresh[5] <= pix[0] && pix[0] < thresh[6]) dst[5]++;
+        else if(thresh[6] <= pix[0] && pix[0] < thresh[7]) dst[6]++;
+        else if(thresh[7] <= pix[0] && pix[0] < thresh[8]) dst[7]++;
+        else if(thresh[8] <= pix[0] && pix[0] < thresh[9]) dst[8]++;
+        else if(thresh[9] <= pix[0] && pix[0] < thresh[10]) dst[9]++;
+        else if(thresh[10] <= pix[0] && pix[0] < thresh[11]) dst[10]++;
+        else dst[11]++;
+
+        if(thresh[0] <= pix[1] && pix[1] < thresh[1]) dst[hist_bins + 0]++;
+        else if(thresh[1] <= pix[1] && pix[1] < thresh[2]) dst[hist_bins + 1]++;
+        else if(thresh[2] <= pix[1] && pix[1] < thresh[3]) dst[hist_bins + 2]++;
+        else if(thresh[3] <= pix[1] && pix[1] < thresh[4]) dst[hist_bins + 3]++;
+        else if(thresh[4] <= pix[1] && pix[1] < thresh[5]) dst[hist_bins + 4]++;
+        else if(thresh[5] <= pix[1] && pix[1] < thresh[6]) dst[hist_bins + 5]++;
+        else if(thresh[6] <= pix[1] && pix[1] < thresh[7]) dst[hist_bins + 6]++;
+        else if(thresh[7] <= pix[1] && pix[1] < thresh[8]) dst[hist_bins + 7]++;
+        else if(thresh[8] <= pix[1] && pix[1] < thresh[9]) dst[hist_bins + 8]++;
+        else if(thresh[9] <= pix[1] && pix[1] < thresh[10]) dst[hist_bins + 9]++;
+        else if(thresh[10] <= pix[1] && pix[1] < thresh[11]) dst[hist_bins + 10]++;
+        else dst[hist_bins + 11]++;
+
+        if(thresh[0] <= pix[2] && pix[2] < thresh[1]) dst[hist_bins * 2 + 0]++;
+        else if(thresh[1] <= pix[2] && pix[2] < thresh[2]) dst[hist_bins * 2 + 1]++;
+        else if(thresh[2] <= pix[2] && pix[2] < thresh[3]) dst[hist_bins * 2 + 2]++;
+        else if(thresh[3] <= pix[2] && pix[2] < thresh[4]) dst[hist_bins * 2 + 3]++;
+        else if(thresh[4] <= pix[2] && pix[2] < thresh[5]) dst[hist_bins * 2 + 4]++;
+        else if(thresh[5] <= pix[2] && pix[2] < thresh[6]) dst[hist_bins * 2 + 5]++;
+        else if(thresh[6] <= pix[2] && pix[2] < thresh[7]) dst[hist_bins * 2 + 6]++;
+        else if(thresh[7] <= pix[2] && pix[2] < thresh[8]) dst[hist_bins * 2 + 7]++;
+        else if(thresh[8] <= pix[2] && pix[2] < thresh[9]) dst[hist_bins * 2 + 8]++;
+        else if(thresh[9] <= pix[2] && pix[2] < thresh[10]) dst[hist_bins * 2 + 9]++;
+        else if(thresh[10] <= pix[2] && pix[2] < thresh[11]) dst[hist_bins * 2 + 10]++;
+        else dst[hist_bins * 2 + 11]++;
       }
     }
   }
