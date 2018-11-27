@@ -1,4 +1,6 @@
 #include "ap_int.h"
+#include "ap_cint.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +11,7 @@
 const unsigned char thresh[hist_bins] = {0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234};
 
 
-inline void calc_hist(unsigned char image_buffer[HEIGHT][WIDTH*3], unsigned int rst[hist_bins * 3]){
+inline void calc_hist(unsigned char image_buffer[HEIGHT][WIDTH*3], unsigned short rst[hist_bins * 3]){
 	loop_y:for(int y = 0; y < HEIGHT; y++){
 		loop_x:for(int x = 0; x < WIDTH; x++){
 			loop_i:for(int i = 0; i < 3; i++){
@@ -32,7 +34,7 @@ inline void calc_hist(unsigned char image_buffer[HEIGHT][WIDTH*3], unsigned int 
 	}
 }
 
-void color_hist(int specs[3], unsigned char *imageptr, unsigned int* feature){
+void color_hist(int specs[3], unsigned char *imageptr, unsigned short* feature){
 #pragma HLS INTERFACE s_axilite depth=16 port=specs bundle=SPECS
 #pragma HLS INTERFACE s_axilite port=return bundle=CONTROL_BUS
 #pragma HLS INTERFACE m_axi port=imageptr offset=slave bundle=INPUT_IMAGE
@@ -46,7 +48,7 @@ void color_hist(int specs[3], unsigned char *imageptr, unsigned int* feature){
 		int offset = ((y + i) * original_width + x) * 3;
 		memcpy(image_buffer[i], imageptr + offset, WIDTH * sizeof(unsigned char) * 3);
 	}
-	unsigned int rst[hist_bins*3] = {0};
+	unsigned short rst[hist_bins*3] = {0};
 	calc_hist(image_buffer, rst);
-	memcpy(feature, rst, hist_bins * 3 * sizeof(unsigned int));
+	memcpy(feature, rst, hist_bins * 3 * sizeof(unsigned short));
 }

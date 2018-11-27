@@ -6,9 +6,9 @@
 open_project color_hist
 set_top color_hist
 add_files color_hist/src/main.cpp
-add_files -tb color_hist/src/calc_hist.hpp
-add_files -tb ../sw/src/frame.png
 add_files -tb color_hist/src/main_tb.cpp
+add_files -tb ../sw/src/frame.png
+add_files -tb color_hist/src/calc_hist.hpp
 open_solution "solution1"
 set_part {xc7z020clg400-1} -tool vivado
 create_clock -period 6 -name default

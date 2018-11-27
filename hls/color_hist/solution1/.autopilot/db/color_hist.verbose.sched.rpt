@@ -1,0 +1,736 @@
+
+
+================================================================
+== Vivado HLS Report for 'color_hist'
+================================================================
+* Date:           Tue Nov 27 15:34:44 2018
+
+* Version:        2017.4 (Build 2086221 on Fri Dec 15 21:13:33 MST 2017)
+* Project:        color_hist
+* Solution:       solution1
+* Product family: zynq
+* Target device:  xc7z020clg400-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing (ns): 
+    * Summary: 
+    +--------+-------+----------+------------+
+    |  Clock | Target| Estimated| Uncertainty|
+    +--------+-------+----------+------------+
+    |ap_clk  |   6.00|      5.25|        0.75|
+    +--------+-------+----------+------------+
+
++ Latency (clock cycles): 
+    * Summary: 
+    +------+------+------+------+---------+
+    |   Latency   |   Interval  | Pipeline|
+    |  min |  max |  min |  max |   Type  |
+    +------+------+------+------+---------+
+    |  3188|  3188|  3188|  3188|   none  |
+    +------+------+------+------+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +-------------------------------+------+------+----------+-----------+-----------+------+----------+
+        |                               |   Latency   | Iteration|  Initiation Interval  | Trip |          |
+        |           Loop Name           |  min |  max |  Latency |  achieved |   target  | Count| Pipelined|
+        +-------------------------------+------+------+----------+-----------+-----------+------+----------+
+        |- read_input_memcpy..imageptr  |  1558|  1558|        24|          1|          1|  1536|    yes   |
+        |- memset_rst                   |    35|    35|         1|          -|          -|    36|    no    |
+        |- memcpy.feature.rst.gep       |    37|    37|         3|          1|          1|    36|    yes   |
+        +-------------------------------+------+------+----------+-----------+-----------+------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 1
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 0
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
++ Individual pipeline summary: 
+  * Pipeline-0: initiation interval (II) = 1, depth = 24
+  * Pipeline-1: initiation interval (II) = 1, depth = 3
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 40
+* Pipeline : 2
+  Pipeline-0 : II = 1, D = 24, States = { 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 }
+  Pipeline-1 : II = 1, D = 3, States = { 33 34 35 }
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 
+	2  / true
+2 --> 
+	3  / true
+3 --> 
+	4  / true
+4 --> 
+	5  / true
+5 --> 
+	6  / true
+6 --> 
+	7  / true
+7 --> 
+	8  / true
+8 --> 
+	9  / true
+9 --> 
+	10  / true
+10 --> 
+	11  / true
+11 --> 
+	29  / (exitcond_flatten)
+	12  / (!exitcond_flatten)
+12 --> 
+	13  / true
+13 --> 
+	14  / true
+14 --> 
+	15  / true
+15 --> 
+	16  / true
+16 --> 
+	17  / true
+17 --> 
+	18  / true
+18 --> 
+	19  / true
+19 --> 
+	20  / true
+20 --> 
+	21  / true
+21 --> 
+	22  / true
+22 --> 
+	23  / true
+23 --> 
+	24  / true
+24 --> 
+	25  / true
+25 --> 
+	26  / true
+26 --> 
+	27  / true
+27 --> 
+	28  / true
+28 --> 
+	5  / true
+29 --> 
+	30  / true
+30 --> 
+	30  / (!tmp_5)
+	31  / (tmp_5)
+31 --> 
+	32  / true
+32 --> 
+	33  / true
+33 --> 
+	36  / (exitcond2)
+	34  / (!exitcond2)
+34 --> 
+	35  / true
+35 --> 
+	33  / true
+36 --> 
+	37  / true
+37 --> 
+	38  / true
+38 --> 
+	39  / true
+39 --> 
+	40  / true
+40 --> 
+
+* FSM state operations: 
+
+ <State 1> : 2.32ns
+ST_1 : Operation 41 [1/1] (0.00ns)   --->   "%specs_addr = getelementptr [3 x i32]* %specs, i64 0, i64 0"
+ST_1 : Operation 42 [1/1] (0.00ns)   --->   "%image_buffer_0 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 43 [1/1] (0.00ns)   --->   "%image_buffer_1 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 44 [1/1] (0.00ns)   --->   "%image_buffer_2 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 45 [1/1] (0.00ns)   --->   "%image_buffer_3 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 46 [1/1] (0.00ns)   --->   "%image_buffer_4 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 47 [1/1] (0.00ns)   --->   "%image_buffer_5 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 48 [1/1] (0.00ns)   --->   "%image_buffer_6 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 49 [1/1] (0.00ns)   --->   "%image_buffer_7 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 50 [1/1] (0.00ns)   --->   "%image_buffer_8 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 51 [1/1] (0.00ns)   --->   "%image_buffer_9 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 52 [1/1] (0.00ns)   --->   "%image_buffer_10 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 53 [1/1] (0.00ns)   --->   "%image_buffer_11 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 54 [1/1] (0.00ns)   --->   "%image_buffer_12 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 55 [1/1] (0.00ns)   --->   "%image_buffer_13 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 56 [1/1] (0.00ns)   --->   "%image_buffer_14 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 57 [1/1] (0.00ns)   --->   "%image_buffer_15 = alloca [96 x i8], align 1" [color_hist/src/main.cpp:45]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 58 [1/1] (0.00ns)   --->   "%rst = alloca [36 x i16], align 16" [color_hist/src/main.cpp:51]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_1 : Operation 59 [2/2] (2.32ns)   --->   "%y = load i32* %specs_addr, align 4" [color_hist/src/main.cpp:42]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+
+ <State 2> : 2.32ns
+ST_2 : Operation 60 [1/2] (2.32ns)   --->   "%y = load i32* %specs_addr, align 4" [color_hist/src/main.cpp:42]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+ST_2 : Operation 61 [1/1] (0.00ns)   --->   "%specs_addr_1 = getelementptr [3 x i32]* %specs, i64 0, i64 1" [color_hist/src/main.cpp:43]
+ST_2 : Operation 62 [2/2] (2.32ns)   --->   "%x = load i32* %specs_addr_1, align 4" [color_hist/src/main.cpp:43]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+
+ <State 3> : 2.32ns
+ST_3 : Operation 63 [1/2] (2.32ns)   --->   "%x = load i32* %specs_addr_1, align 4" [color_hist/src/main.cpp:43]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+ST_3 : Operation 64 [1/1] (0.00ns)   --->   "%specs_addr_2 = getelementptr [3 x i32]* %specs, i64 0, i64 2" [color_hist/src/main.cpp:44]
+ST_3 : Operation 65 [2/2] (2.32ns)   --->   "%original_width = load i32* %specs_addr_2, align 4" [color_hist/src/main.cpp:44]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+
+ <State 4> : 2.32ns
+ST_4 : Operation 66 [1/1] (1.00ns)   --->   "%feature_read = call i32 @_ssdm_op_Read.s_axilite.i32(i32 %feature_r)"   --->   Core 10 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_4 : Operation 67 [1/1] (1.00ns)   --->   "%imageptr_read = call i32 @_ssdm_op_Read.s_axilite.i32(i32 %imageptr)"   --->   Core 10 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_4 : Operation 68 [1/1] (0.00ns)   --->   "%feature3 = call i31 @_ssdm_op_PartSelect.i31.i32.i32.i32(i32 %feature_read, i32 1, i32 31)"
+ST_4 : Operation 69 [1/1] (0.00ns)   --->   "%tmp_3 = zext i31 %feature3 to i64"
+ST_4 : Operation 70 [1/1] (0.00ns)   --->   "%FEATURE_addr = getelementptr i16* %FEATURE, i64 %tmp_3"
+ST_4 : Operation 71 [1/1] (0.00ns)   --->   "%tmp_10_cast = sext i32 %imageptr_read to i33"
+ST_4 : Operation 72 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecBitsMap(i16* %FEATURE), !map !30"
+ST_4 : Operation 73 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecBitsMap(i8* %INPUT_IMAGE), !map !34"
+ST_4 : Operation 74 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecBitsMap([3 x i32]* %specs) nounwind, !map !38"
+ST_4 : Operation 75 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecTopModule([11 x i8]* @color_hist_str) nounwind"
+ST_4 : Operation 76 [1/1] (0.00ns)   --->   "%empty = call i32 (...)* @_ssdm_op_SpecMemCore([3 x i32]* %specs, [1 x i8]* @p_str8, [7 x i8]* @RAM_1P_str, [1 x i8]* @p_str8, i32 -1, [1 x i8]* @p_str8, [1 x i8]* @p_str8, [1 x i8]* @p_str8, [1 x i8]* @p_str8, [1 x i8]* @p_str8)"
+ST_4 : Operation 77 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface([3 x i32]* %specs, [10 x i8]* @p_str, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 16, [6 x i8]* @p_str2, [1 x i8]* @p_str1, [1 x i8]* @p_str1, i32 0, i32 0, i32 0, i32 0, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind"
+ST_4 : Operation 78 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i32 0, [10 x i8]* @p_str, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [12 x i8]* @p_str3, [1 x i8]* @p_str1, [1 x i8]* @p_str1, i32 0, i32 0, i32 0, i32 0, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind" [color_hist/src/main.cpp:39]
+ST_4 : Operation 79 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i8* %INPUT_IMAGE, [6 x i8]* @p_str4, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [12 x i8]* @p_str5, [6 x i8]* @p_str6, [1 x i8]* @p_str1, i32 16, i32 16, i32 16, i32 16, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind" [color_hist/src/main.cpp:40]
+ST_4 : Operation 80 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i32 %imageptr, [10 x i8]* @mode, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [1 x i8]* @bundle, [6 x i8]* @p_str6, [1 x i8]* @p_str1, i32 16, i32 16, i32 16, i32 16, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind" [color_hist/src/main.cpp:40]
+ST_4 : Operation 81 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i16* %FEATURE, [6 x i8]* @p_str4, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [8 x i8]* @p_str7, [6 x i8]* @p_str6, [1 x i8]* @p_str1, i32 16, i32 16, i32 16, i32 16, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind" [color_hist/src/main.cpp:41]
+ST_4 : Operation 82 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecInterface(i32 %feature_r, [10 x i8]* @mode1, i32 0, i32 0, [1 x i8]* @p_str1, i32 0, i32 0, [1 x i8]* @bundle2, [6 x i8]* @p_str6, [1 x i8]* @p_str1, i32 16, i32 16, i32 16, i32 16, [1 x i8]* @p_str1, [1 x i8]* @p_str1) nounwind" [color_hist/src/main.cpp:41]
+ST_4 : Operation 83 [1/2] (2.32ns)   --->   "%original_width = load i32* %specs_addr_2, align 4" [color_hist/src/main.cpp:44]   --->   Core 42 'RAM_1P' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 3> <RAM>
+ST_4 : Operation 84 [1/1] (1.76ns)   --->   "br label %burst.rd.header" [color_hist/src/main.cpp:47]
+
+ <State 5> : 5.13ns
+ST_5 : Operation 85 [1/1] (0.00ns)   --->   "%indvar_flatten = phi i11 [ 0, %0 ], [ %indvar_flatten_next, %burst.rd.body21 ]"
+ST_5 : Operation 86 [1/1] (0.00ns)   --->   "%i = phi i5 [ 0, %0 ], [ %i_mid2, %burst.rd.body21 ]" [color_hist/src/main.cpp:47]
+ST_5 : Operation 87 [1/1] (0.00ns)   --->   "%indvar = phi i7 [ 0, %0 ], [ %indvar_next, %burst.rd.body21 ]"
+ST_5 : Operation 88 [1/1] (0.00ns)   --->   "%i_cast7 = zext i5 %i to i32" [color_hist/src/main.cpp:47]
+ST_5 : Operation 89 [1/1] (2.55ns)   --->   "%tmp = add nsw i32 %i_cast7, %y" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 90 [1/1] (0.00ns)   --->   "%tmp_10 = trunc i5 %i to i4" [color_hist/src/main.cpp:47]
+ST_5 : Operation 91 [1/1] (0.00ns)   --->   "%p_shl3 = call i11 @_ssdm_op_BitConcatenate.i11.i4.i7(i4 %tmp_10, i7 0)" [color_hist/src/main.cpp:47]
+ST_5 : Operation 92 [1/1] (0.00ns)   --->   "%p_shl3_cast = zext i11 %p_shl3 to i12" [color_hist/src/main.cpp:47]
+ST_5 : Operation 93 [1/1] (0.00ns)   --->   "%p_shl4 = call i9 @_ssdm_op_BitConcatenate.i9.i4.i5(i4 %tmp_10, i5 0)" [color_hist/src/main.cpp:47]
+ST_5 : Operation 94 [1/1] (0.00ns)   --->   "%p_shl4_cast = zext i9 %p_shl4 to i12" [color_hist/src/main.cpp:47]
+ST_5 : Operation 95 [1/1] (1.97ns)   --->   "%tmp_8 = sub i12 %p_shl3_cast, %p_shl4_cast" [color_hist/src/main.cpp:47]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 96 [1/1] (1.88ns)   --->   "%exitcond_flatten = icmp eq i11 %indvar_flatten, -512"   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.42> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 97 [1/1] (1.97ns)   --->   "%indvar_flatten_next = add i11 1, %indvar_flatten"   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 98 [1/1] (1.48ns)   --->   "%exitcond = icmp eq i7 %indvar, -32"   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.42> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 99 [1/1] (1.37ns)   --->   "%indvar_mid2 = select i1 %exitcond, i7 0, i7 %indvar"   --->   Core 26 'Sel' <Latency = 0> <II = 1> <Delay = 1.37> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_5 : Operation 100 [1/1] (1.78ns)   --->   "%i_s = add i5 1, %i" [color_hist/src/main.cpp:47]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 101 [1/1] (0.00ns)   --->   "%i_cast7_mid1 = zext i5 %i_s to i32" [color_hist/src/main.cpp:47]
+ST_5 : Operation 102 [1/1] (2.55ns)   --->   "%tmp_mid1 = add nsw i32 %i_cast7_mid1, %y" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 103 [1/1] (0.00ns)   --->   "%tmp_14 = trunc i5 %i_s to i4" [color_hist/src/main.cpp:47]
+ST_5 : Operation 104 [1/1] (0.00ns)   --->   "%p_shl3_mid1 = call i11 @_ssdm_op_BitConcatenate.i11.i4.i7(i4 %tmp_14, i7 0)" [color_hist/src/main.cpp:47]
+ST_5 : Operation 105 [1/1] (0.00ns)   --->   "%p_shl3_cast_mid1 = zext i11 %p_shl3_mid1 to i12" [color_hist/src/main.cpp:47]
+ST_5 : Operation 106 [1/1] (0.00ns)   --->   "%p_shl4_mid1 = call i9 @_ssdm_op_BitConcatenate.i9.i4.i5(i4 %tmp_14, i5 0)" [color_hist/src/main.cpp:47]
+ST_5 : Operation 107 [1/1] (0.00ns)   --->   "%p_shl4_cast_mid1 = zext i9 %p_shl4_mid1 to i12" [color_hist/src/main.cpp:47]
+ST_5 : Operation 108 [1/1] (1.97ns)   --->   "%tmp_8_mid1 = sub i12 %p_shl3_cast_mid1, %p_shl4_cast_mid1" [color_hist/src/main.cpp:47]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 109 [1/1] (1.37ns)   --->   "%tmp_8_cast_cast_mid2_1 = select i1 %exitcond, i12 %tmp_8_mid1, i12 %tmp_8" [color_hist/src/main.cpp:47]   --->   Core 26 'Sel' <Latency = 0> <II = 1> <Delay = 1.37> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_5 : Operation 110 [1/1] (1.37ns)   --->   "%i_mid2 = select i1 %exitcond, i5 %i_s, i5 %i" [color_hist/src/main.cpp:47]   --->   Core 26 'Sel' <Latency = 0> <II = 1> <Delay = 1.37> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_5 : Operation 111 [1/1] (1.87ns)   --->   "%indvar_next = add i7 1, %indvar_mid2"   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_5 : Operation 112 [15/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 6> : 3.95ns
+ST_6 : Operation 113 [5/5] (3.95ns)   --->   "%tmp_1 = mul nsw i32 %tmp, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_6 : Operation 114 [1/1] (0.00ns)   --->   "br i1 %exitcond_flatten, label %meminst.preheader, label %burst.rd.end"
+ST_6 : Operation 115 [5/5] (3.95ns)   --->   "%tmp_1_mid1 = mul nsw i32 %tmp_mid1, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_6 : Operation 116 [1/1] (0.00ns)   --->   "%tmp_8_cast_cast_mid2 = sext i12 %tmp_8_cast_cast_mid2_1 to i14" [color_hist/src/main.cpp:47]
+ST_6 : Operation 117 [1/1] (0.00ns)   --->   "%indvar_cast4_cast = zext i7 %indvar_mid2 to i14"
+ST_6 : Operation 118 [14/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_6 : Operation 119 [1/1] (1.99ns)   --->   "%tmp_9 = add i14 %tmp_8_cast_cast_mid2, %indvar_cast4_cast" [color_hist/src/main.cpp:47]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+
+ <State 7> : 3.95ns
+ST_7 : Operation 120 [4/5] (3.95ns)   --->   "%tmp_1 = mul nsw i32 %tmp, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_7 : Operation 121 [4/5] (3.95ns)   --->   "%tmp_1_mid1 = mul nsw i32 %tmp_mid1, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_7 : Operation 122 [13/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 8> : 3.95ns
+ST_8 : Operation 123 [3/5] (3.95ns)   --->   "%tmp_1 = mul nsw i32 %tmp, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 124 [3/5] (3.95ns)   --->   "%tmp_1_mid1 = mul nsw i32 %tmp_mid1, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_8 : Operation 125 [12/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 9> : 3.95ns
+ST_9 : Operation 126 [2/5] (3.95ns)   --->   "%tmp_1 = mul nsw i32 %tmp, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_9 : Operation 127 [2/5] (3.95ns)   --->   "%tmp_1_mid1 = mul nsw i32 %tmp_mid1, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_9 : Operation 128 [11/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 10> : 3.95ns
+ST_10 : Operation 129 [1/5] (3.95ns)   --->   "%tmp_1 = mul nsw i32 %tmp, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 130 [1/5] (3.95ns)   --->   "%tmp_1_mid1 = mul nsw i32 %tmp_mid1, %original_width" [color_hist/src/main.cpp:48]   --->   Core 17 'MulnS' <Latency = 4> <II = 1> <Delay = 3.95> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 131 [10/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_10 : Operation 132 [1/1] (0.00ns)   --->   "%zext_cast = zext i14 %tmp_9 to i30" [color_hist/src/main.cpp:47]
+ST_10 : Operation 133 [3/3] (3.89ns)   --->   "%mul = mul i30 %zext_cast, 21846" [color_hist/src/main.cpp:47]   --->   Core 61 'DSP48' <Latency = 2> <II = 1> <Delay = 3.89> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_10 : Operation 134 [18/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 11> : 5.10ns
+ST_11 : Operation 135 [1/1] (2.55ns)   --->   "%tmp_2 = add nsw i32 %tmp_1, %x" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_11 : Operation 136 [1/1] (0.00ns) (grouped into LUT with out node offset)   --->   "%tmp_7 = shl i32 %tmp_2, 2" [color_hist/src/main.cpp:48]
+ST_11 : Operation 137 [1/1] (2.55ns) (out node of the LUT)   --->   "%offset = sub i32 %tmp_7, %tmp_2" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_11 : Operation 138 [1/1] (2.55ns)   --->   "%tmp_2_mid1 = add nsw i32 %tmp_1_mid1, %x" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_11 : Operation 139 [9/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_11 : Operation 140 [2/3] (3.89ns)   --->   "%mul = mul i30 %zext_cast, 21846" [color_hist/src/main.cpp:47]   --->   Core 61 'DSP48' <Latency = 2> <II = 1> <Delay = 3.89> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_11 : Operation 141 [17/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 12> : 5.10ns
+ST_12 : Operation 142 [1/1] (0.00ns) (grouped into LUT with out node offset_mid1)   --->   "%tmp_12 = shl i32 %tmp_2_mid1, 2" [color_hist/src/main.cpp:48]
+ST_12 : Operation 143 [1/1] (2.55ns) (out node of the LUT)   --->   "%offset_mid1 = sub i32 %tmp_12, %tmp_2_mid1" [color_hist/src/main.cpp:48]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 144 [1/1] (0.00ns) (grouped into LUT with out node imageptr2_sum)   --->   "%tmp_13 = select i1 %exitcond, i32 %offset_mid1, i32 %offset" [color_hist/src/main.cpp:48]   --->   Core 26 'Sel' <Latency = 0> <II = 1> <Delay = 1.37> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_12 : Operation 145 [1/1] (0.00ns) (grouped into LUT with out node imageptr2_sum)   --->   "%tmp_3_mid2_cast = sext i32 %tmp_13 to i33" [color_hist/src/main.cpp:48]
+ST_12 : Operation 146 [1/1] (2.55ns) (out node of the LUT)   --->   "%imageptr2_sum = add i33 %tmp_10_cast, %tmp_3_mid2_cast" [color_hist/src/main.cpp:49]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 147 [1/1] (0.00ns)   --->   "%imageptr2_sum_cast = sext i33 %imageptr2_sum to i64" [color_hist/src/main.cpp:49]
+ST_12 : Operation 148 [1/1] (0.00ns)   --->   "%INPUT_IMAGE_addr = getelementptr inbounds i8* %INPUT_IMAGE, i64 %imageptr2_sum_cast" [color_hist/src/main.cpp:49]
+ST_12 : Operation 149 [8/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 150 [1/3] (0.00ns)   --->   "%mul = mul i30 %zext_cast, 21846" [color_hist/src/main.cpp:47]   --->   Core 61 'DSP48' <Latency = 2> <II = 1> <Delay = 3.89> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 0> <OutPorts = 1> <Sync> <CReg>
+ST_12 : Operation 151 [16/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_12 : Operation 152 [1/1] (0.00ns)   --->   "%tmp_t = call i4 @_ssdm_op_PartSelect.i4.i30.i32.i32(i30 %mul, i32 21, i32 24)" [color_hist/src/main.cpp:47]
+
+ <State 13> : 3.61ns
+ST_13 : Operation 153 [7/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_13 : Operation 154 [15/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_13 : Operation 155 [1/1] (1.42ns)   --->   "switch i4 %tmp_t, label %branch15 [
+    i4 0, label %branch0
+    i4 1, label %branch1
+    i4 2, label %branch2
+    i4 3, label %branch3
+    i4 4, label %branch4
+    i4 5, label %branch5
+    i4 6, label %branch6
+    i4 7, label %branch7
+    i4 -8, label %branch8
+    i4 -7, label %branch9
+    i4 -6, label %branch10
+    i4 -5, label %branch11
+    i4 -4, label %branch12
+    i4 -3, label %branch13
+    i4 -2, label %branch14
+  ]" [color_hist/src/main.cpp:49]
+
+ <State 14> : 3.61ns
+ST_14 : Operation 156 [6/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_14 : Operation 157 [14/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 15> : 3.61ns
+ST_15 : Operation 158 [5/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_15 : Operation 159 [13/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 16> : 3.61ns
+ST_16 : Operation 160 [4/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_16 : Operation 161 [12/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 17> : 3.61ns
+ST_17 : Operation 162 [3/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_17 : Operation 163 [11/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 18> : 3.61ns
+ST_18 : Operation 164 [2/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_18 : Operation 165 [10/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 19> : 4.78ns
+ST_19 : Operation 166 [1/15] (3.22ns)   --->   "%tmp_15 = urem i11 %indvar_flatten, 96"   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_19 : Operation 167 [1/1] (1.55ns)   --->   "%tmp_16 = icmp eq i11 %tmp_15, 0"   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.42> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_19 : Operation 168 [1/1] (0.00ns)   --->   "br i1 %tmp_16, label %ReqBB, label %BurstBB"
+ST_19 : Operation 169 [9/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 20> : 5.25ns
+ST_20 : Operation 170 [7/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_20 : Operation 171 [8/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 21> : 5.25ns
+ST_21 : Operation 172 [6/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_21 : Operation 173 [7/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 22> : 5.25ns
+ST_22 : Operation 174 [5/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_22 : Operation 175 [6/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 23> : 5.25ns
+ST_23 : Operation 176 [4/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_23 : Operation 177 [5/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 24> : 5.25ns
+ST_24 : Operation 178 [3/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_24 : Operation 179 [4/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 25> : 5.25ns
+ST_25 : Operation 180 [2/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_25 : Operation 181 [3/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 26> : 5.25ns
+ST_26 : Operation 182 [1/7] (5.25ns)   --->   "%INPUT_IMAGE_addr_rd_s = call i1 @_ssdm_op_ReadReq.m_axi.i8P(i8* %INPUT_IMAGE_addr, i32 96)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_26 : Operation 183 [1/1] (0.00ns)   --->   "br label %BurstBB"
+ST_26 : Operation 184 [2/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+
+ <State 27> : 5.25ns
+ST_27 : Operation 185 [1/1] (5.25ns)   --->   "%INPUT_IMAGE_addr_rea = call i8 @_ssdm_op_Read.m_axi.i8P(i8* %INPUT_IMAGE_addr)" [color_hist/src/main.cpp:49]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_27 : Operation 186 [1/18] (3.61ns)   --->   "%tmp_6 = urem i14 %tmp_9, 96" [color_hist/src/main.cpp:47]   --->   Core 23 'DivnS' <Latency = 17> <II = 1> <Delay = 3.61> <FuncUnit> <Opcode : 'sdiv' 'srem' 'udiv' 'urem'> <InPorts = 2> <OutPorts = 1>
+ST_27 : Operation 187 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 188 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 189 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 190 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 191 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 192 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 193 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 194 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 195 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 196 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 197 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 198 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 199 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 200 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 201 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+ST_27 : Operation 202 [1/1] (0.00ns)   --->   "br label %burst.rd.body21" [color_hist/src/main.cpp:49]
+
+ <State 28> : 2.30ns
+ST_28 : Operation 203 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecLoopName([28 x i8]* @read_input_memcpy_OC)"
+ST_28 : Operation 204 [1/1] (0.00ns)   --->   "%empty_9 = call i32 (...)* @_ssdm_op_SpecLoopTripCount(i64 1536, i64 1536, i64 1536) nounwind"
+ST_28 : Operation 205 [1/1] (0.00ns)   --->   "%burstread_rbegin = call i32 (...)* @_ssdm_op_SpecRegionBegin([17 x i8]* @burstread_OC_region_s) nounwind"
+ST_28 : Operation 206 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecPipeline(i32 1, i32 1, i32 1, i32 0, [1 x i8]* @p_str10)"
+ST_28 : Operation 207 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecLoopName([17 x i8]* @memcpy_OC_OC_imagep)"
+ST_28 : Operation 208 [1/1] (0.00ns)   --->   "%tmp_s = zext i14 %tmp_6 to i64" [color_hist/src/main.cpp:49]
+ST_28 : Operation 209 [1/1] (0.00ns)   --->   "%image_buffer_0_addr = getelementptr [96 x i8]* %image_buffer_0, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 210 [1/1] (0.00ns)   --->   "%image_buffer_1_addr = getelementptr [96 x i8]* %image_buffer_1, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 211 [1/1] (0.00ns)   --->   "%image_buffer_2_addr = getelementptr [96 x i8]* %image_buffer_2, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 212 [1/1] (0.00ns)   --->   "%image_buffer_3_addr = getelementptr [96 x i8]* %image_buffer_3, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 213 [1/1] (0.00ns)   --->   "%image_buffer_4_addr = getelementptr [96 x i8]* %image_buffer_4, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 214 [1/1] (0.00ns)   --->   "%image_buffer_5_addr = getelementptr [96 x i8]* %image_buffer_5, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 215 [1/1] (0.00ns)   --->   "%image_buffer_6_addr = getelementptr [96 x i8]* %image_buffer_6, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 216 [1/1] (0.00ns)   --->   "%image_buffer_7_addr = getelementptr [96 x i8]* %image_buffer_7, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 217 [1/1] (0.00ns)   --->   "%image_buffer_8_addr = getelementptr [96 x i8]* %image_buffer_8, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 218 [1/1] (0.00ns)   --->   "%image_buffer_9_addr = getelementptr [96 x i8]* %image_buffer_9, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 219 [1/1] (0.00ns)   --->   "%image_buffer_10_add = getelementptr [96 x i8]* %image_buffer_10, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 220 [1/1] (0.00ns)   --->   "%image_buffer_11_add = getelementptr [96 x i8]* %image_buffer_11, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 221 [1/1] (0.00ns)   --->   "%image_buffer_12_add = getelementptr [96 x i8]* %image_buffer_12, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 222 [1/1] (0.00ns)   --->   "%image_buffer_13_add = getelementptr [96 x i8]* %image_buffer_13, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 223 [1/1] (0.00ns)   --->   "%image_buffer_14_add = getelementptr [96 x i8]* %image_buffer_14, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 224 [1/1] (0.00ns)   --->   "%image_buffer_15_add = getelementptr [96 x i8]* %image_buffer_15, i64 0, i64 %tmp_s" [color_hist/src/main.cpp:49]
+ST_28 : Operation 225 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_14_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 226 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_13_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 227 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_12_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 228 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_11_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 229 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_10_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 230 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_9_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 231 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_8_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 232 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_7_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 233 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_6_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 234 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_5_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 235 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_4_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 236 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_3_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 237 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_2_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 238 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_1_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 239 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_0_addr, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 240 [1/1] (2.30ns)   --->   "store i8 %INPUT_IMAGE_addr_rea, i8* %image_buffer_15_add, align 1" [color_hist/src/main.cpp:49]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_28 : Operation 241 [1/1] (0.00ns)   --->   "%burstread_rend = call i32 (...)* @_ssdm_op_SpecRegionEnd([17 x i8]* @burstread_OC_region_s, i32 %burstread_rbegin) nounwind"
+ST_28 : Operation 242 [1/1] (0.00ns)   --->   "br label %burst.rd.header"
+
+ <State 29> : 1.77ns
+ST_29 : Operation 243 [1/1] (1.76ns)   --->   "br label %meminst" [color_hist/src/main.cpp:51]
+
+ <State 30> : 2.32ns
+ST_30 : Operation 244 [1/1] (0.00ns)   --->   "%invdar = phi i6 [ %indvarinc, %meminst ], [ 0, %meminst.preheader ]" [color_hist/src/main.cpp:51]
+ST_30 : Operation 245 [1/1] (1.82ns)   --->   "%indvarinc = add i6 %invdar, 1" [color_hist/src/main.cpp:51]   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_30 : Operation 246 [1/1] (0.00ns)   --->   "%tmp_4 = zext i6 %invdar to i64" [color_hist/src/main.cpp:51]
+ST_30 : Operation 247 [1/1] (0.00ns)   --->   "%rst_addr = getelementptr [36 x i16]* %rst, i64 0, i64 %tmp_4" [color_hist/src/main.cpp:51]
+ST_30 : Operation 248 [1/1] (2.32ns)   --->   "store i16 0, i16* %rst_addr, align 2" [color_hist/src/main.cpp:51]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+ST_30 : Operation 249 [1/1] (1.42ns)   --->   "%tmp_5 = icmp eq i6 %invdar, -29" [color_hist/src/main.cpp:51]   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.42> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_30 : Operation 250 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecLoopName([11 x i8]* @memset_rst_str)"
+ST_30 : Operation 251 [1/1] (0.00ns)   --->   "%empty_10 = call i32 (...)* @_ssdm_op_SpecLoopTripCount(i64 36, i64 36, i64 36) nounwind"
+ST_30 : Operation 252 [1/1] (0.00ns)   --->   "br i1 %tmp_5, label %1, label %meminst" [color_hist/src/main.cpp:51]
+
+ <State 31> : 0.00ns
+ST_31 : Operation 253 [2/2] (0.00ns)   --->   "call fastcc void @calc_hist([96 x i8]* %image_buffer_0, [96 x i8]* %image_buffer_1, [96 x i8]* %image_buffer_2, [96 x i8]* %image_buffer_3, [96 x i8]* %image_buffer_4, [96 x i8]* %image_buffer_5, [96 x i8]* %image_buffer_6, [96 x i8]* %image_buffer_7, [96 x i8]* %image_buffer_8, [96 x i8]* %image_buffer_9, [96 x i8]* %image_buffer_10, [96 x i8]* %image_buffer_11, [96 x i8]* %image_buffer_12, [96 x i8]* %image_buffer_13, [96 x i8]* %image_buffer_14, [96 x i8]* %image_buffer_15, [36 x i16]* %rst) nounwind" [color_hist/src/main.cpp:52]   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+ <State 32> : 5.25ns
+ST_32 : Operation 254 [1/2] (0.00ns)   --->   "call fastcc void @calc_hist([96 x i8]* %image_buffer_0, [96 x i8]* %image_buffer_1, [96 x i8]* %image_buffer_2, [96 x i8]* %image_buffer_3, [96 x i8]* %image_buffer_4, [96 x i8]* %image_buffer_5, [96 x i8]* %image_buffer_6, [96 x i8]* %image_buffer_7, [96 x i8]* %image_buffer_8, [96 x i8]* %image_buffer_9, [96 x i8]* %image_buffer_10, [96 x i8]* %image_buffer_11, [96 x i8]* %image_buffer_12, [96 x i8]* %image_buffer_13, [96 x i8]* %image_buffer_14, [96 x i8]* %image_buffer_15, [36 x i16]* %rst) nounwind" [color_hist/src/main.cpp:52]   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_32 : Operation 255 [1/1] (5.25ns)   --->   "%FEATURE_addr_wr_req = call i1 @_ssdm_op_WriteReq.m_axi.i16P(i16* %FEATURE_addr, i32 36)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_32 : Operation 256 [1/1] (1.76ns)   --->   "br label %burst.wr.header"
+
+ <State 33> : 2.36ns
+ST_33 : Operation 257 [1/1] (0.00ns)   --->   "%indvar8 = phi i6 [ 0, %1 ], [ %indvar_next9, %burst.wr.body ]"
+ST_33 : Operation 258 [1/1] (1.42ns)   --->   "%exitcond2 = icmp eq i6 %indvar8, -28"   --->   Core 25 'Cmp' <Latency = 0> <II = 1> <Delay = 1.42> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_33 : Operation 259 [1/1] (1.82ns)   --->   "%indvar_next9 = add i6 %indvar8, 1"   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 1.82> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_33 : Operation 260 [1/1] (0.00ns)   --->   "br i1 %exitcond2, label %memcpy.tail, label %burst.wr.body"
+ST_33 : Operation 261 [1/1] (0.00ns)   --->   "%tmp_11 = zext i6 %indvar8 to i64" [color_hist/src/main.cpp:53]
+ST_33 : Operation 262 [1/1] (0.00ns)   --->   "%rst_addr_1 = getelementptr [36 x i16]* %rst, i64 0, i64 %tmp_11" [color_hist/src/main.cpp:53]
+ST_33 : Operation 263 [2/2] (2.32ns)   --->   "%rst_load = load i16* %rst_addr_1, align 2" [color_hist/src/main.cpp:53]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+
+ <State 34> : 2.32ns
+ST_34 : Operation 264 [1/2] (2.32ns)   --->   "%rst_load = load i16* %rst_addr_1, align 2" [color_hist/src/main.cpp:53]   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 2.32> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 16> <Depth = 36> <RAM>
+
+ <State 35> : 5.25ns
+ST_35 : Operation 265 [1/1] (0.00ns)   --->   "%empty_11 = call i32 (...)* @_ssdm_op_SpecLoopTripCount(i64 36, i64 36, i64 36) nounwind"
+ST_35 : Operation 266 [1/1] (0.00ns)   --->   "%burstwrite_rbegin = call i32 (...)* @_ssdm_op_SpecRegionBegin([18 x i8]* @burstwrite_OC_region) nounwind"
+ST_35 : Operation 267 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecPipeline(i32 1, i32 1, i32 1, i32 0, [1 x i8]* @p_str14)"
+ST_35 : Operation 268 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecLoopName([23 x i8]* @memcpy_OC_feature_OC)"
+ST_35 : Operation 269 [1/1] (5.25ns)   --->   "call void @_ssdm_op_Write.m_axi.i16P(i16* %FEATURE_addr, i16 %rst_load, i2 -1)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_35 : Operation 270 [1/1] (0.00ns)   --->   "%burstwrite_rend = call i32 (...)* @_ssdm_op_SpecRegionEnd([18 x i8]* @burstwrite_OC_region, i32 %burstwrite_rbegin) nounwind"
+ST_35 : Operation 271 [1/1] (0.00ns)   --->   "br label %burst.wr.header"
+
+ <State 36> : 5.25ns
+ST_36 : Operation 272 [5/5] (5.25ns)   --->   "%FEATURE_addr_wr_resp = call i1 @_ssdm_op_WriteResp.m_axi.i16P(i16* %FEATURE_addr)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+ <State 37> : 5.25ns
+ST_37 : Operation 273 [4/5] (5.25ns)   --->   "%FEATURE_addr_wr_resp = call i1 @_ssdm_op_WriteResp.m_axi.i16P(i16* %FEATURE_addr)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+ <State 38> : 5.25ns
+ST_38 : Operation 274 [3/5] (5.25ns)   --->   "%FEATURE_addr_wr_resp = call i1 @_ssdm_op_WriteResp.m_axi.i16P(i16* %FEATURE_addr)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+ <State 39> : 5.25ns
+ST_39 : Operation 275 [2/5] (5.25ns)   --->   "%FEATURE_addr_wr_resp = call i1 @_ssdm_op_WriteResp.m_axi.i16P(i16* %FEATURE_addr)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+ <State 40> : 5.25ns
+ST_40 : Operation 276 [1/5] (5.25ns)   --->   "%FEATURE_addr_wr_resp = call i1 @_ssdm_op_WriteResp.m_axi.i16P(i16* %FEATURE_addr)" [color_hist/src/main.cpp:53]   --->   Core 9 'm_axi' <Latency = 6> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_40 : Operation 277 [1/1] (0.00ns)   --->   "ret void" [color_hist/src/main.cpp:54]
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 6ns, clock uncertainty: 0.75ns.
+
+ <State 1>: 2.32ns
+The critical path consists of the following:
+	'getelementptr' operation ('specs_addr') [15]  (0 ns)
+	'load' operation ('y', color_hist/src/main.cpp:42) on array 'specs' [41]  (2.32 ns)
+
+ <State 2>: 2.32ns
+The critical path consists of the following:
+	'load' operation ('y', color_hist/src/main.cpp:42) on array 'specs' [41]  (2.32 ns)
+
+ <State 3>: 2.32ns
+The critical path consists of the following:
+	'load' operation ('x', color_hist/src/main.cpp:43) on array 'specs' [43]  (2.32 ns)
+
+ <State 4>: 2.32ns
+The critical path consists of the following:
+	'load' operation ('original_width', color_hist/src/main.cpp:44) on array 'specs' [45]  (2.32 ns)
+
+ <State 5>: 5.13ns
+The critical path consists of the following:
+	'phi' operation ('i', color_hist/src/main.cpp:47) with incoming values : ('i_mid2', color_hist/src/main.cpp:47) [49]  (0 ns)
+	'add' operation ('i_s', color_hist/src/main.cpp:47) [71]  (1.78 ns)
+	'sub' operation ('tmp_8_mid1', color_hist/src/main.cpp:47) [85]  (1.98 ns)
+	'select' operation ('tmp_8_cast_cast_mid2_1', color_hist/src/main.cpp:47) [86]  (1.37 ns)
+
+ <State 6>: 3.95ns
+The critical path consists of the following:
+	'mul' operation ('tmp_1', color_hist/src/main.cpp:48) [53]  (3.95 ns)
+
+ <State 7>: 3.95ns
+The critical path consists of the following:
+	'mul' operation ('tmp_1', color_hist/src/main.cpp:48) [53]  (3.95 ns)
+
+ <State 8>: 3.95ns
+The critical path consists of the following:
+	'mul' operation ('tmp_1', color_hist/src/main.cpp:48) [53]  (3.95 ns)
+
+ <State 9>: 3.95ns
+The critical path consists of the following:
+	'mul' operation ('tmp_1', color_hist/src/main.cpp:48) [53]  (3.95 ns)
+
+ <State 10>: 3.95ns
+The critical path consists of the following:
+	'mul' operation ('tmp_1', color_hist/src/main.cpp:48) [53]  (3.95 ns)
+
+ <State 11>: 5.1ns
+The critical path consists of the following:
+	'add' operation ('tmp_2', color_hist/src/main.cpp:48) [54]  (2.55 ns)
+	'sub' operation ('offset', color_hist/src/main.cpp:48) [56]  (2.55 ns)
+
+ <State 12>: 5.1ns
+The critical path consists of the following:
+	'shl' operation ('tmp_12', color_hist/src/main.cpp:48) [76]  (0 ns)
+	'sub' operation ('offset_mid1', color_hist/src/main.cpp:48) [77]  (2.55 ns)
+	'select' operation ('tmp_13', color_hist/src/main.cpp:48) [78]  (0 ns)
+	'add' operation ('imageptr2_sum', color_hist/src/main.cpp:49) [91]  (2.55 ns)
+
+ <State 13>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 14>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 15>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 16>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 17>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 18>: 3.61ns
+The critical path consists of the following:
+	'urem' operation ('tmp_6', color_hist/src/main.cpp:47) [108]  (3.61 ns)
+
+ <State 19>: 4.78ns
+The critical path consists of the following:
+	'urem' operation ('tmp_15') [97]  (3.23 ns)
+	'icmp' operation ('tmp_16') [98]  (1.55 ns)
+
+ <State 20>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 21>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 22>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 23>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 24>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 25>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 26>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [101]  (5.25 ns)
+
+ <State 27>: 5.25ns
+The critical path consists of the following:
+	bus read on port 'INPUT_IMAGE' (color_hist/src/main.cpp:49) [104]  (5.25 ns)
+
+ <State 28>: 2.3ns
+The critical path consists of the following:
+	'getelementptr' operation ('image_buffer_14_add', color_hist/src/main.cpp:49) [125]  (0 ns)
+	'store' operation (color_hist/src/main.cpp:49) of variable 'INPUT_IMAGE_addr_rea', color_hist/src/main.cpp:49 on array 'image_buffer[14]', color_hist/src/main.cpp:45 [129]  (2.3 ns)
+
+ <State 29>: 1.77ns
+The critical path consists of the following:
+	multiplexor before 'phi' operation ('invdar', color_hist/src/main.cpp:51) with incoming values : ('indvarinc', color_hist/src/main.cpp:51) [182]  (1.77 ns)
+
+ <State 30>: 2.32ns
+The critical path consists of the following:
+	'phi' operation ('invdar', color_hist/src/main.cpp:51) with incoming values : ('indvarinc', color_hist/src/main.cpp:51) [182]  (0 ns)
+	'getelementptr' operation ('rst_addr', color_hist/src/main.cpp:51) [185]  (0 ns)
+	'store' operation (color_hist/src/main.cpp:51) of constant 0 on array 'rst', color_hist/src/main.cpp:51 [186]  (2.32 ns)
+
+ <State 31>: 0ns
+The critical path consists of the following:
+
+ <State 32>: 5.25ns
+The critical path consists of the following:
+	bus request on port 'FEATURE' (color_hist/src/main.cpp:53) [193]  (5.25 ns)
+
+ <State 33>: 2.36ns
+The critical path consists of the following:
+	'icmp' operation ('exitcond2') [197]  (1.43 ns)
+	blocking operation 0.931 ns on control path)
+
+ <State 34>: 2.32ns
+The critical path consists of the following:
+	'load' operation ('rst_load', color_hist/src/main.cpp:53) on array 'rst', color_hist/src/main.cpp:51 [207]  (2.32 ns)
+
+ <State 35>: 5.25ns
+The critical path consists of the following:
+	bus write on port 'FEATURE' (color_hist/src/main.cpp:53) [208]  (5.25 ns)
+
+ <State 36>: 5.25ns
+The critical path consists of the following:
+	bus access on port 'FEATURE' (color_hist/src/main.cpp:53) [212]  (5.25 ns)
+
+ <State 37>: 5.25ns
+The critical path consists of the following:
+	bus access on port 'FEATURE' (color_hist/src/main.cpp:53) [212]  (5.25 ns)
+
+ <State 38>: 5.25ns
+The critical path consists of the following:
+	bus access on port 'FEATURE' (color_hist/src/main.cpp:53) [212]  (5.25 ns)
+
+ <State 39>: 5.25ns
+The critical path consists of the following:
+	bus access on port 'FEATURE' (color_hist/src/main.cpp:53) [212]  (5.25 ns)
+
+ <State 40>: 5.25ns
+The critical path consists of the following:
+	bus access on port 'FEATURE' (color_hist/src/main.cpp:53) [212]  (5.25 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+	State 6
+	State 7
+	State 8
+	State 9
+	State 10
+	State 11
+	State 12
+	State 13
+	State 14
+	State 15
+	State 16
+	State 17
+	State 18
+	State 19
+	State 20
+	State 21
+	State 22
+	State 23
+	State 24
+	State 25
+	State 26
+	State 27
+	State 28
+	State 29
+	State 30
+	State 31
+	State 32
+	State 33
+	State 34
+	State 35
+	State 36
+	State 37
+	State 38
+	State 39
+	State 40
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A
