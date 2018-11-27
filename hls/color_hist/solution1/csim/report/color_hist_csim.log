@@ -1,8 +1,0 @@
-INFO: [SIM 2] *************** CSIM start ***************
-INFO: [SIM 4] CSIM will launch GCC as the compiler.
-   Compiling ../../../src/main_tb.cpp in debug mode
-   Generating csim.exe
-240 1316 295 22 23 101 38 10 3 0 0 0 2 9 12 12 44 122 212 1613 21 0 1 0 1892 60 21 12 11 6 5 6 3 4 7 21 
-240 1316 295 22 23 101 38 10 3 0 0 0 2 9 12 12 44 122 212 1613 21 0 1 0 1892 60 21 12 11 6 5 6 3 4 7 21 
-INFO: [SIM 1] CSim done with 0 errors.
-INFO: [SIM 3] *************** CSIM finish ***************
