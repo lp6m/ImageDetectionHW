@@ -19,7 +19,7 @@ import glob
 
 import pickle
 import time
-
+import myhog
 
 class WindowFinder(object):
     """Finds windows in an image that contain a car."""
@@ -31,14 +31,6 @@ class WindowFinder(object):
         self.load_saved     = False# Loads classifier and scaler
         self.load_features  = False # Loads saved features (to train new classifier)
 
-        # self.sample_size    = 100 # How many to sample from training set
-        self.color_space    = 'HSV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-        self.orient         = 8  # HOG orientations
-        self.pix_per_cell   = 12 # HOG pixels per cell
-        self.cell_per_block = 2 # HOG cells per block
-        self.hog_channel    = 0 # Can be 0, 1, 2, or "ALL"
-        self.spatial_size   = (8, 8) # Spatial binning dimensions
-        self.hist_bins      = 12   # Number of histogram bins
         self.spatial_feat   = True # Spatial features on or off
         self.hist_feat      = True # Histogram features on or off
         self.hog_feat       = True # HOG features on or off
@@ -51,15 +43,7 @@ class WindowFinder(object):
         # The locations of all the data.
         self.notred_data_folders = ['./data/not_red/']
         self.red_data_folders = ['./data/red/']
-        # self.notcar_data_folders = ['./data/non-vehicles/Extras',
-        #                             './data/non-vehicles/GTI']
-
-        # self.car_data_folders    = ['./data/vehicles/GTI_MiddleClose',
-        #                             './data/vehicles/GTI_Far',
-        #                             './data/vehicles/KITTI_extracted',
-        #                             './data/vehicles/GTI_Right',
-        #                             './data/vehicles/GTI_Left']
-
+        
         ######Classifiers                            
         self.pred_thresh = 0.65 #Increase to decrease likelihood of detection.
         
@@ -245,15 +229,7 @@ class WindowFinder(object):
         #7) Compute HOG features if flag is set
         if self.hog_feat == True:
 
-            hog_features = self.__get_hog_features(gray, vis=False, feature_vec=True)
-            # if self.hog_channel == 'ALL':
-            #     hog_features = []
-            #     for channel in range(img.shape[2]):
-            #         hog_features.extend(self.__get_hog_features(img[:,:,channel],
-            #                             vis=False, feature_vec=True))      
-            # else:
-            #     hog_features = self.__get_hog_features(feature_image[:,:,self.hog_channel],
-            #                                            vis=False, feature_vec=True)
+            hog_features = self.__get_hog_features(gray)
             #8) Append features to list
             img_features.append(hog_features)
 
@@ -283,53 +259,20 @@ class WindowFinder(object):
 
     # Define a function to return HOG features and visualization
     def __get_hog_features(self, img, vis=False, feature_vec=True):
-        # Call with two outputs if vis==True
-        if vis == True:
-            features, hog_image = hog(img, orientations=self.orient, 
-                                      pixels_per_cell=(self.pix_per_cell, self.pix_per_cell),
-                                      cells_per_block=(self.cell_per_block, self.cell_per_block), 
-                                      transform_sqrt=True, 
-                                      visualize=vis, feature_vector=feature_vec, block_norm='L2-Hys')
-            return features, hog_image
-        # Otherwise call with one output
-        else:      
-            features = hog(img, orientations=self.orient, 
-                           pixels_per_cell=(self.pix_per_cell, self.pix_per_cell),
-                           cells_per_block=(self.cell_per_block, self.cell_per_block), 
-                           transform_sqrt=True, 
-                           visualize=vis, feature_vector=feature_vec, block_norm='L2-Hys')
-            return features
+        return myhog.myhog(img)
+
 
     # Define a function to compute binned color features  
     def __bin_spatial(self, img):
-        # Use cv2.resize().ravel() to create the feature vector
-        # print('resize')
-        # print(cv2.resize(img, self.spatial_size))
-        features = cv2.resize(img, self.spatial_size).ravel() 
-        # print('features')
-        # print(features)
-        # Return the feature vector
-        # tmpimg = cv2.resize(img, self.spatial_size)
-        # cv2.imwrite('./tmpimg.png', tmpimg)
-        # print(features)
+        features = cv2.resize(img, self.spatial_size, cv2.INTER_LINEAR).ravel()
         return features
 
     # Define a function to compute color histogram features 
     # NEED TO CHANGE bins_range if reading .png files with mpimg!
     def __color_hist(self, img, bins_range=(0, 256)):
-        # Compute the histogram of the color channels separately
-        channel1_hist = np.histogram(img[:,:,0], bins=self.hist_bins, range=bins_range)
-        # channel1_hist = np.histogram(img[:,:,0], bins=12, range=(0, 256)
-        # make 12 dankai histogram
-        channel2_hist = np.histogram(img[:,:,1], bins=self.hist_bins, range=bins_range)
-        channel3_hist = np.histogram(img[:,:,2], bins=self.hist_bins, range=bins_range)
-        # Concatenate the histograms into a single feature vector
-        hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
-        # Return the individual histograms, bin_centers and feature vector
-        # print('channel1_hist', channel1_hist)
-        # print('channel2_hist', channel2_hist)
-        # print('channel3_hist', channel2_hist)
-        # print('hist_features', hist_features)
+        channel1_hist = np.histogram(img[:,:,0], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
+        channel2_hist = np.histogram(img[:,:,1], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
+        channel3_hist = np.histogram(img[:,:,2], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
         return hist_features
 
     # Define a function to extract features from a list of images
@@ -355,7 +298,7 @@ class WindowFinder(object):
             
             ######### Classifier HOG Feature Prediction #########
             t1 = time.time()
-            test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32))
+            test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32), cv2.INTER_LINEAR)
             # cv2.imwrite('resize/resized' + str(i) + '.png', test_img)
             # cv2.waitKey(0)
             t2 = time.time()
@@ -547,7 +490,7 @@ class WindowFinder(object):
         t1 = time.time()
         rf_windows = []
         for window in self.windows_list:
-            resized = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32))
+            resized = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32), cv2.INTER_LINEAR)
             if(check_red_ratio(resized) > 2.00):
                 rf_windows.append(window)
 
