@@ -31,6 +31,7 @@ class WindowFinder(object):
         self.load_saved     = False# Loads classifier and scaler
         self.load_features  = False # Loads saved features (to train new classifier)
 
+        self.spatial_size   = (8, 8)
         self.spatial_feat   = True # Spatial features on or off
         self.hist_feat      = True # Histogram features on or off
         self.hog_feat       = True # HOG features on or off
@@ -273,6 +274,7 @@ class WindowFinder(object):
         channel1_hist = np.histogram(img[:,:,0], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
         channel2_hist = np.histogram(img[:,:,1], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
         channel3_hist = np.histogram(img[:,:,2], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
+        hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
         return hist_features
 
     # Define a function to extract features from a list of images
