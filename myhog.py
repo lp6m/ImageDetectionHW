@@ -115,39 +115,4 @@ def myhog(image):
                     dst[blkIdx*36+i] = 0
     # print(dst)
     return np.array(dst)
-
-
-def __color_hist(img, bins_range=(0, 256)):
-        # Compute the histogram of the color channels separately
-        # channel1_hist = np.histogram(img[:,:,0], bins=12, range=bins_range)
-        # channel2_hist = np.histogram(img[:,:,1], bins=12, range=bins_range)
-        # channel3_hist = np.histogram(img[:,:,2], bins=12, range=bins_range)
-        channel1_hist = np.histogram(img[:,:,0], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
-        channel2_hist = np.histogram(img[:,:,1], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
-        channel3_hist = np.histogram(img[:,:,2], bins=[0, 21, 42, 64, 85,106, 128, 149, 170, 192, 213, 234, 256])
-        hist_features = np.concatenate((channel1_hist[0], channel2_hist[0], channel3_hist[0]))
-        return hist_features
-
-img = cv2.imread('./crop_test/crop/image83.png')
-
-rgb = cv2.resize(img, (64, 32), cv2.INTER_LINEAR)
-
-hls = cv2.cvtColor(rgb, cv2.COLOR_RGB2HLS)# convert it to HLS
-gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
-
-features = []
-features.append(cv2.resize(hls, (8, 8), cv2.INTER_LINEAR).ravel())
-features.append(cv2.resize(rgb, (8, 8), cv2.INTER_LINEAR).ravel())
-cv2.imwrite('python.bmp', rgb)
-features.append(__color_hist(hls))
-features.append(__color_hist(rgb))
-
-features.append(myhog(image=gray))
-
-rst = np.concatenate(features)
-
-for i in range(len(rst)):
-    print(rst[i])
-
-# print(len(rst))
-
+    
