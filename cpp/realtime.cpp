@@ -14,28 +14,26 @@ using namespace std;
 using namespace cv;
 
 float test_one_image(Mat img){
+  Mat resized_img, gray;
+  cv::resize(img, resized_img, cv::Size(64 ,32), INTER_LINEAR);
+  cv::Mat resized_hls;
+  cv::cvtColor(resized_img, resized_hls, CV_RGB2HLS);
+
   cv::Size spatial_size(8, 8);
-  Mat resized_rgb, resized_hls;
-  cv::resize(img, resized_rgb, spatial_size);
-  cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
+  Mat spatial_rgb, spatial_hls;
+  cv::resize(resized_img, spatial_rgb, spatial_size, INTER_LINEAR);
+  cv::resize(resized_hls, spatial_hls, spatial_size, INTER_LINEAR);
   
-  double feature[584] = {0};
-  ravel(resized_hls, feature);
-  ravel(resized_rgb, feature + 192);
+  double feature[744] = {0};
+  ravel(spatial_hls, feature);
+  ravel(spatial_rgb, feature + 192);
+  cv::imwrite("rgbcpp.bmp", resized_img);
+  hist(resized_hls, feature + 192 * 2);
+  hist(resized_img, feature + 192 * 2 + 36);
 
-  cv::Mat hls;
-  cv::cvtColor(img, hls, CV_RGB2HLS);
-  hist(img, feature + 192 * 2);
-  hist(hls, feature + 192 * 2 + 36);
+  cv::cvtColor(resized_img, gray, CV_RGB2GRAY);
+  lite_hog(gray, feature + 192 * 2 + 36 * 2);
 
-  Mat resized_rgb2, gray;
-  cv::resize(img, resized_rgb2, cv::Size(64 ,32)); //height = yrange = 64, width = xrange = 32
-  cv::cvtColor(resized_rgb2, gray, CV_RGB2GRAY);
-  hog(gray, feature + 192 * 2 + 36 * 2);
-  for(int i = 0; i < 584; i ++){
-    // cout << feature[i] << ", ";
-  }
-  // cout << endl;
   clf_res res = randomforest_classifier(feature);
   float red_proba = (float)res.red / (res.not_red + res.red);
   cout << red_proba << endl;
@@ -44,7 +42,7 @@ float test_one_image(Mat img){
 
 int main(int argc, const char* argv[])
 {
-  cv::VideoCapture cap(1);
+  cv::VideoCapture cap(0);
   if(!cap.isOpened()){
     cout << "failed" << endl;
     return -1;
