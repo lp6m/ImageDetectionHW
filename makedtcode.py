@@ -53,7 +53,7 @@ class RandomForestCodeGenerator:
     def __tree_to_code_cpp(self, tree, funname, feature_array_name):
         code = ""
         tree_ = tree.tree_
-        code += "clf_res {}(int {}[{}]){{\n".format(funname, feature_array_name, self.feature_num)
+        code += "clf_res {}(unsigned short {}[{}]){{\n".format(funname, feature_array_name, self.feature_num)
         def recurse(node, depth):
             rec_code = ""
             indent = "  " * depth
@@ -90,10 +90,10 @@ class RandomForestCodeGenerator:
 
         code += "const int estimator_num = {};\n".format(self.estimator_num);
         for i in range(self.estimator_num):
-            code += "clf_res {}{}(int X[{}]);\n".format(self.function_prefix, i, self.feature_num)
-        code += "clf_res (*estimators[])(int*) = {{{}}};\n\n".format(", ".join(["dt{}".format(i) for i in range(self.estimator_num)]))
+            code += "clf_res {}{}(unsigned short X[{}]);\n".format(self.function_prefix, i, self.feature_num)
+        code += "clf_res (*estimators[])(unsigned short*) = {{{}}};\n\n".format(", ".join(["dt{}".format(i) for i in range(self.estimator_num)]))
 
-        code += "clf_res randomforest_classifier(int X[{}]){{\n".format(self.feature_num)
+        code += "clf_res randomforest_classifier(unsigned short X[{}]){{\n".format(self.feature_num)
         code += "  clf_res rst = clf_res(0, 0);\n"
         code += "  for(int i = 0; i < estimator_num; i++){\n"
         code += "    clf_res tmpres = (*estimators[i])(X);\n"
@@ -116,14 +116,14 @@ class RandomForestCodeGenerator:
     def run_generated_code(self):
         pass
 
-clf = pickle.load(open( "./cache/clf.p", "rb" ))
+clf = pickle.load(open( './cache/clf.p', 'rb'))
 scaler_mean = pickle.load(open( "./cache/scaler_mean.p", "rb" ))
 scaler_std = pickle.load(open( "./cache/scaler_std.p", "rb" ))
 feature_num = len(scaler_std)
 
 gen = RandomForestCodeGenerator(clf, feature_num, scaler_mean, scaler_std)
 cppcode = gen.forest_to_code_cpp()
-with open('./cpp/forest.h', mode='w') as f:
+with open('./sw/src/forest.h', mode='w') as f:
     f.write(cppcode)
 
 # funarray = []
