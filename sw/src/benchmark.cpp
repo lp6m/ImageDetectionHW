@@ -96,7 +96,7 @@ bool inputdatacheck2(unsigned char* ptr, cv::Mat img){
   return rst;
 }
 
-bool hwresultcheck(double* sw_feature, unsigned short* hw_feature, int start, int end){
+bool hwresultcheck(unsigned short* sw_feature, unsigned short* hw_feature, int start, int end){
     bool showmode = true;
     bool flg = true;
     for(int i = start; i < end; i++){
@@ -117,7 +117,7 @@ float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
     cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
 
     //64*3*2+12*3*2+72*4=744
-    double sw_feature[FEATURE_SIZE] = {0};
+    unsigned short sw_feature[FEATURE_SIZE] = {0};
     unsigned short hw_feature[FEATURE_SIZE] = {0};
     
 	/*for(int i = 0; i < 32; i++){
@@ -127,8 +127,8 @@ float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
     t1 = std::chrono::system_clock::now();
     if(hwmode){
         memset(hw_feature, 0, sizeof(unsigned short) * FEATURE_SIZE);
-        ravel(resized_hls, ((unsigned short*)hw_feature));
-        ravel(resized_rgb, ((unsigned short*)hw_feature + 192));
+        ravel(resized_hls, hw_feature);
+        ravel(resized_rgb, hw_feature + 192);
 		t1 = std::chrono::system_clock::now();
         //create RGB histogram
         for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, rgb.data + rgb.step * i, rgb.cols * 3 * sizeof(unsigned char));
@@ -148,17 +148,17 @@ float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
 	*time2 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count()/1000;
     if(!hwmode || checkmode){
         memset(sw_feature, 0, sizeof(double) *584);
-        ravel(resized_hls, ((double*)sw_feature));
-        ravel(resized_rgb, ((double*)sw_feature + 192));
+        ravel(resized_hls, sw_feature);
+        ravel(resized_rgb, sw_feature + 192);
         hist(rgb, sw_feature + 192 * 2);
         hist(hls, sw_feature + 192 * 2 + 36);
         lite_hog(gray, sw_feature + 192 * 2 + 36 * 2);
     }
 	if(checkmode) hwresultcheck(sw_feature, hw_feature, 0, FEATURE_SIZE);
     //Classify by Random Forest
-    clf_res res;
-    if(hwmode) res = RandomForestClassifier<unsigned short>::predict_proba(hw_feature);
-    else       res = RandomForestClassifier<double>::predict_proba(sw_feature);
+    clf_res res(0, 0);
+    if(hwmode) res = randomforest_classifier(hw_feature);
+    else       res = randomforest_classifier(sw_feature);
     float red_proba = (float)res.red / (res.not_red + res.red);
     // cout << red_proba << endl;
     return red_proba;

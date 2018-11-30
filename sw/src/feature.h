@@ -46,7 +46,7 @@ inline int approx_distance(int dx, int dy){
 
 vector<int> descrip_index_test;
 
-void lite_hog(cv::Mat img, double* dst, bool approx_mode=true){
+void lite_hog(cv::Mat img, unsigned short* dst, bool approx_mode=true){
   int descriptor[HISTOGRAMSIZE]={0};
   int sum_of_block[N_BLOCK_ROW * N_BLOCK_COL]={0};
   for(int i = 0; i < HISTOGRAMSIZE; i++) descriptor[i] = 0;
@@ -274,27 +274,20 @@ void hog(cv::Mat img, double *dst){
     }
   }
 }
-template<typename T>
-void ravel(cv::Mat img, T* dst){
+
+void ravel(cv::Mat img, unsigned short* dst){
   vector<int> rst;
   for(int y = 0; y < img.rows; y++){
     for(int x = 0; x < img.cols; x++){
       cv::Vec<unsigned char, 3> pix = img.ptr<cv::Vec3b>(y)[x];
-      dst[3 * (y * img.cols + x)] = ((T)(pix[0]));
-      dst[3 * (y * img.cols + x) + 1] = ((T)(pix[1]));
-      dst[3 * (y * img.cols + x) + 2] = ((T)(pix[2]));
+      dst[3 * (y * img.cols + x)] = ((unsigned short)(pix[0]));
+      dst[3 * (y * img.cols + x) + 1] = ((unsigned short)(pix[1]));
+      dst[3 * (y * img.cols + x) + 2] = ((unsigned short)(pix[2]));
     }
   }
 }
 
-// void hist(cv::Mat img, int* dst){
-void hist(cv::Mat img, double* dst){
-  // vector<int> rst(hist_bins*3);
-  // int range_min = 0;
-  // int range_max = 256;//[0,256)
-  // vector<float> thresh;
-  // vector<int> channel1_hist(hist_bins), channel2_hist(hist_bins), channel3_hist(hist_bins);
-  //for(int i = 0; i < hist_bins; i++) thresh.push_back((float)((float)i*(range_max - range_min)/hist_bins));
+void hist(cv::Mat img, unsigned short* dst){
   for(int y = 0; y < img.rows; y++){
     for(int x = 0; x < img.cols; x++){
       cv::Vec<unsigned char, 3> pix = img.ptr<cv::Vec3b>(y)[x];
