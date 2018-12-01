@@ -289,6 +289,7 @@ class WindowFinder(object):
 
         #1) Create an empty list to receive positive detection windows
         on_windows = []
+        probas = []
 
         #2) Iterate over all windows in the list
         rtime = 0.0
@@ -333,13 +334,14 @@ class WindowFinder(object):
 
             if prediction >= self.pred_thresh:
                 on_windows.append(window)
+                probas.append(prediction)
 
         print('feature time : ', ftime)
         print('prediction time : ', ptime)
         #8) Return windows for positive detections
         # print("Number of hot windows:", len(on_windows))
         # print("Number of windows:", len(windows))
-        return on_windows
+        return on_windows, probas
 
 
 
@@ -499,7 +501,7 @@ class WindowFinder(object):
         print('candidate %d -> %d' % (len(self.windows_list), len(rf_windows)))
         t2 = time.time()
         print('remove arienai time: ', t2-t1)
-        hot_windows = self.__classify_windows(img, rf_windows)
+        hot_windows, probas = self.__classify_windows(img, rf_windows)
         # hot_windows = self.__classify_windows(img, self.windows_list)
 
         t3 = time.time()
@@ -516,4 +518,4 @@ class WindowFinder(object):
             # return window_img
             
 
-        return hot_windows
+        return hot_windows, probas

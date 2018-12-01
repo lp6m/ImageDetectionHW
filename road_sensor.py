@@ -32,11 +32,18 @@ class RoadSensor(object):
         # cv_image = np.array(img)[:, :, ::-1].copy() 
         # mpimg.imsave('original.png', img)
         # cv2.imwrite('original_cv.png', cv_image)
-        hot_windows = self.windFinder.get_hot_windows(img)
-        result   = self.__draw_boxes(img, hot_windows)
+        hot_windows, probas = self.windFinder.get_hot_windows(img)
+        result   = self.__draw_results(img, hot_windows, probas)
 
         # cv2.waitKey(1)
         return result
+
+    def __draw_results(self, img, hot_windows, probas):
+        imcopy = np.copy(img)
+        for bbox, proba in zip(hot_windows, probas):
+            cv2.rectangle(imcopy, bbox[0], bbox[1], (0, 0, 255), 2)
+            cv2.putText(imcopy,str(proba),(bbox[0][0]+2, bbox[0][1]+2),cv2.FONT_HERSHEY_PLAIN, 2,(255,255,0))
+        return imcopy
 
     def __draw_boxes(self, img, bboxes, color=(0, 0, 255), thick=2):
         """Draws boxes on image from a list of windows"""
