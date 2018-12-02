@@ -10,10 +10,16 @@
 #include "feature.h"
 #include "forest.h"
 #include "window_candidate.h"
+#include "hw.h"
 using namespace std;
 using namespace cv;
 
+#define FEATURE_SIZE 64*3*2+12*3*2+72*4
+#define hwmode false
+
 float test_one_image(Mat img){
+  std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
+
   Mat resized_img, gray;
   cv::resize(img, resized_img, cv::Size(64 ,32), INTER_LINEAR);
   cv::Mat resized_hls;
@@ -25,13 +31,31 @@ float test_one_image(Mat img){
   cv::resize(resized_hls, spatial_hls, spatial_size, INTER_LINEAR);
   
   unsigned short feature[744] = {0};
+  memset(feature, 0, sizeof(unsigned short) * FEATURE_SIZE);
+
   ravel(spatial_hls, feature);
   ravel(spatial_rgb, feature + 192);
-  hist(resized_hls, feature + 192 * 2);
-  hist(resized_img, feature + 192 * 2 + 36);
 
-  cv::cvtColor(resized_img, gray, CV_BGR2GRAY)
-  lite_hog(gray, feature + 192 * 2 + 36 * 2);
+  if(hwmode){
+    t1 = std::chrono::system_clock::now();
+    //create HSV histogram
+    for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, resized_hls.data + resized_hls.step * i, resized_hls.cols * 3 * sizeof(unsigned char));
+    color_hist_hw(feature + 192 * 2);
+    //create RGB histogram
+    for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, resized_img.data + resized_img.step * i, resized_img.cols * 3 * sizeof(unsigned char));
+    color_hist_hw(feature + 192 * 2 + 36);
+    //calculate HOG feature
+    t2 = std::chrono::system_clock::now();
+    cv::cvtColor(resized_img, gray, CV_BGR2GRAY);
+    for(int i = 0; i < 32; i++)  memcpy(hog_imageBuffer + 64 * i, gray.data + gray.step * i, gray.cols * sizeof(unsigned char));
+    calc_hog_hw(feature + 192 * 2 + 36 * 2);
+    t3 = std::chrono::system_clock::now();
+  }else{
+    hist(resized_hls, feature + 192 * 2);
+    hist(resized_img, feature + 192 * 2 + 36);
+    cv::cvtColor(resized_img, gray, CV_BGR2GRAY);
+    lite_hog(gray, feature + 192 * 2 + 36 * 2);
+  }
 
   clf_res res = randomforest_classifier(feature);
   float red_proba = (float)res.red / (res.not_red + res.red);
@@ -46,6 +70,8 @@ int main(int argc, const char* argv[])
     cout << "failed" << endl;
     return -1;
   }
+  if(hwmode) hw_setup();
+  cout << "hw setup completed" << endl;
   std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
   while(1){
       t1 = std::chrono::system_clock::now();
@@ -69,7 +95,6 @@ int main(int argc, const char* argv[])
           else d[y][x] = d[y-1][x] + tmpsum;
         }
       }
-
       for(int i = 0; i < 126; i++){
         cv::Mat out;
         int sy = w[i][0][0];
@@ -101,5 +126,6 @@ int main(int argc, const char* argv[])
       cout << "fps:" << 1000.0/elapsed << "[fps]" << endl;
   }
   cv::destroyAllWindows();
+  if(hwmode) hw_release();
   return 0;
 }
