@@ -62,9 +62,26 @@ def show_importances():
 	print('hist_rgb', np.sum(np.array(hist_rgb)))
 	print('hog', np.sum(np.array(hog)))
 
+def scaler_test():
+	path = 'resized87.png'
+	finder = vdtools.WindowFinder()
+	test_img = cv2.imread(path)
+	clf = pickle.load( open( "./cache/clf.p", "rb" ))
+	scaler = pickle.load(open( "./cache/scaler.p", "rb"))
+	scaler_mean = pickle.load(open( "./cache/scaler_mean.p", "rb" ))
+	scaler_std = pickle.load(open( "./cache/scaler_std.p", "rb" ))
+	features = finder.singleimgfeatures(test_img)
+
+	transformed = scaler.transform(np.array(features).reshape(1, -1))[0]
+	my_transformed = (np.array(features) - scaler_mean) / (scaler_std + 1e-8)
+	for i in range(744):
+		if(abs(transformed[i] - my_transformed[i]) > 1e-4):
+			print("transform failed")
+	print("transform check complete")
 
 # test_one_resized_image()
 show_importances()
+# scaler_test()
 # generate_window_candidate()
 # generate_window_cppcode()
 # unko = vdtools.WindowFinder()
