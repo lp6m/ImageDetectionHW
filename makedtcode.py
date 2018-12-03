@@ -22,8 +22,11 @@ class RandomForestCodeGenerator:
             indent = "  " * depth
             if tree_.feature[node] != _tree.TREE_UNDEFINED:
                 # name = feature_name[node]
-                name = '{}[{}]'.format(feature_array_name, tree_.feature[node])
+                feature_index = tree_.feature[node]
+                name = '{}[{}]'.format(feature_array_name, feature_index)
                 threshold = tree_.threshold[node]
+                threshold = threshold * self.scaler_std[feature_index] + self.scaler_mean[feature_index]
+
                 rec_code += "{}if {} <= {}:\n".format(indent, name, threshold)
                 rec_code += recurse(tree_.children_left[node], depth + 1)
                 rec_code += ("{}else:  # if {} > {}\n".format(indent, name, threshold))
@@ -58,11 +61,12 @@ class RandomForestCodeGenerator:
             rec_code = ""
             indent = "  " * depth
             if tree_.feature[node] != _tree.TREE_UNDEFINED:
+                feature_index = tree_.feature[node]
                 # name = feature_name[node]
-                name = '{}[{}]'.format(feature_array_name, tree_.feature[node])
+                name = '{}[{}]'.format(feature_array_name, feature_index)
                 threshold = tree_.threshold[node]
                 # unscaler threshold
-                threshold = threshold * self.scaler_std[node] + self.scaler_mean[node]
+                threshold = threshold * self.scaler_std[feature_index] + self.scaler_mean[feature_index]
 
                 rec_code += "{}if ({} <= {}){{\n".format(indent, name, threshold)
                 rec_code += recurse(tree_.children_left[node], depth + 1)
@@ -93,14 +97,15 @@ class RandomForestCodeGenerator:
             code += "clf_res {}{}(unsigned short X[{}]);\n".format(self.function_prefix, i, self.feature_num)
         code += "clf_res (*estimators[])(unsigned short*) = {{{}}};\n\n".format(", ".join(["dt{}".format(i) for i in range(self.estimator_num)]))
 
-        code += "clf_res randomforest_classifier(unsigned short X[{}]){{\n".format(self.feature_num)
-        code += "  clf_res rst = clf_res(0, 0);\n"
+        code += "double randomforest_classifier(unsigned short X[{}]){{\n".format(self.feature_num)
+        # code += "  float rst = 0;\n"
+        code += "  double sum = 0;\n"
         code += "  for(int i = 0; i < estimator_num; i++){\n"
         code += "    clf_res tmpres = (*estimators[i])(X);\n"
-        code += "    rst.not_red += tmpres.not_red;\n"
-        code += "    rst.red += tmpres.red;\n"
+        code += "    double proba = (double)tmpres.red/(double)(tmpres.not_red + tmpres.red);\n"
+        code += "    sum += proba;\n"
         code += "  }\n"
-        code += "  return rst;\n"
+        code += "  return (double)sum / (double)estimator_num;\n"
         code += "}\n\n"
 
         #generate code for each decision tree
@@ -123,7 +128,7 @@ feature_num = len(scaler_std)
 
 gen = RandomForestCodeGenerator(clf, feature_num, scaler_mean, scaler_std)
 cppcode = gen.forest_to_code_cpp()
-with open('./sw/src/forest.h', mode='w') as f:
+with open('./cpp/forest.h', mode='w') as f:
     f.write(cppcode)
 
 # funarray = []
