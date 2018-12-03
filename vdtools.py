@@ -397,22 +397,6 @@ class WindowFinder(object):
                                 y_start_stop, xy_window,
                                 xy_overlap,
                                 visualise=False):
-        """
-        Define a function that takes an image, start and stop positions in both x and y, 
-        window size (x and y dimensions), and overlap fraction (for both x and y). Send
-        the results to __search_windows to get the classifications.
-        """
-
-        # If x and/or y start/stop positions not defined, set to image size
-        # if x_start_stop[0] == None:
-        #     x_start_stop[0] = 0
-        # if x_start_stop[1] == None:
-        #     x_start_stop[1] = img.shape[1]
-        # if y_start_stop[0] == None:
-        #     y_start_stop[0] = 0
-        # if y_start_stop[1] == None:
-        #     y_start_stop[1] = img.shape[0]
-        # Compute the span of the region to be searched    
         xspan = x_start_stop[1] - x_start_stop[0]
         yspan = y_start_stop[1] - y_start_stop[0]
         # Compute the number of pixels per step in x/y
@@ -423,10 +407,6 @@ class WindowFinder(object):
         ny_windows = np.int(yspan/ny_pix_per_step) - 1
         # Initialize a list to append window positions to
         window_list = []
-        # Loop through finding x and y window positions
-        # Note: you could vectorize this step, but in practice
-        # you'll be considering windows one by one with your
-        # classifier, so looping makes sense
         for ys in range(ny_windows):
             for xs in range(nx_windows):
                 # Calculate window position
