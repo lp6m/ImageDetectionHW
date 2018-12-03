@@ -28,7 +28,7 @@ class WindowFinder(object):
         ### Hyperparameters, if changed ->(load_saved = False) If
         ### the classifier is changes load_feaures can be True
 
-        self.load_saved     = False# Loads classifier and scaler
+        self.load_saved     = True# Loads classifier and scaler
         self.load_features  = False # Loads saved features (to train new classifier)
 
         self.spatial_size   = (8, 8)
@@ -42,8 +42,10 @@ class WindowFinder(object):
         self.window_range_maxy = 0.6
 
         # The locations of all the data.
-        self.notred_data_folders = ['./data/not_red/']
-        self.red_data_folders = ['./data/red/']
+        # self.notred_data_folders = ['./data/not_red/']
+        # self.red_data_folders = ['./data/red/']
+        self.notred_data_folders = ['./data/not_red_signal/', 'data/not_red_with_trans']
+        self.red_data_folders = ['./data/red_close_gairan/', './data/red_close_wall', './data/red_not_pittiri']
         
         ######Classifiers                            
         self.pred_thresh = 0.65 #Increase to decrease likelihood of detection.
@@ -209,8 +211,8 @@ class WindowFinder(object):
         img_features = []
         #2) Apply color conversion if other than 'RGB'
 
-        hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)# convert it to HLS
-        gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        hls = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)# convert it to HLS
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
    
         #3) Compute spatial features if flag is set
         if self.spatial_feat == True:
@@ -279,7 +281,12 @@ class WindowFinder(object):
 
     # Define a function to extract features from a list of images
     # Have this function call bin_spatial() and color_hist()
-
+    def predictoneimage(self, img):
+        test_image = cv2.resize(img, (64, 32), cv2.INTER_LINEAR)
+        features = self.__single_img_features(test_image)
+        test_features = self.scaler.transform(np.array(features).reshape(1, -1))
+        prediction = self.trained_clf.predict_proba(test_features)[:,1]
+        return prediction
 
     def __classify_windows(self, img, windows):
         """
@@ -467,13 +474,13 @@ class WindowFinder(object):
         print(xy)
 
         windows1 = self.__slide_windows(x_start_stop= x[0], y_start_stop = y[0], 
-                            xy_window= xy[0], xy_overlap=(0.5, 0.5))
+                            xy_window= xy[0], xy_overlap=(0.75, 0.5))
         windows2 = self.__slide_windows(x_start_stop= x[1], y_start_stop = y[1], 
-                            xy_window= xy[1], xy_overlap=(0.5, 0.5))
+                            xy_window= xy[1], xy_overlap=(0.75, 0.5))
         windows3 = self.__slide_windows(x_start_stop= x[2], y_start_stop = y[2], 
-                            xy_window= xy[2], xy_overlap=(0.5, 0.5))
+                            xy_window= xy[2], xy_overlap=(0.75, 0.5))
         windows4 = self.__slide_windows(x_start_stop= x[3], y_start_stop = y[3], 
-                            xy_window= xy[3], xy_overlap=(0.5, 0.5))
+                            xy_window= xy[3], xy_overlap=(0.75, 0.5))
         self.windows_list = list(windows1 + windows2 + windows3 + windows4)
         pickle.dump( self.windows_list, open( "./cache/windows_list.p", "wb" ) )
         print("window_candidate :  {}".format(len(self.windows_list)))
