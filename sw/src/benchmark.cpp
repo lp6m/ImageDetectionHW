@@ -156,12 +156,13 @@ float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
     }
 	if(checkmode) hwresultcheck(sw_feature, hw_feature, 0, FEATURE_SIZE);
     //Classify by Random Forest
-    clf_res res(0, 0);
-    if(hwmode) res = randomforest_classifier(hw_feature);
-    else       res = randomforest_classifier(sw_feature);
-    float red_proba = (float)res.red / (res.not_red + res.red);
+    // clf_res res(0, 0);
+    double proba;
+    if(hwmode) proba = randomforest_classifier(hw_feature);
+    else       proba = randomforest_classifier(sw_feature);
+    // float red_proba = (float)res.red / (res.not_red + res.red);
     // cout << red_proba << endl;
-    return red_proba;
+    return proba;
 }
 void test_one_frame(Mat frame){
     std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;

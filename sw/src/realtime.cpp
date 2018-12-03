@@ -57,10 +57,9 @@ float test_one_image(Mat img){
     lite_hog(gray, feature + 192 * 2 + 36 * 2);
   }
 
-  clf_res res = randomforest_classifier(feature);
-  float red_proba = (float)res.red / (res.not_red + res.red);
-  if(red_proba >= 0.70) cout << red_proba << endl;
-  return red_proba;
+  float proba = randomforest_classifier(feature);
+  if(proba >= 0.70) cout << proba << endl;
+  return proba;
 }
 
 int main(int argc, const char* argv[])
@@ -95,7 +94,7 @@ int main(int argc, const char* argv[])
           else d[y][x] = d[y-1][x] + tmpsum;
         }
       }
-      for(int i = 0; i < 126; i++){
+      for(int i = 0; i < window_num; i++){
         cv::Mat out;
         int sy = w[i][0][0];
         int sx = w[i][1][0];
@@ -103,7 +102,7 @@ int main(int argc, const char* argv[])
         int ex = w[i][1][1];
         //remove arienai
         int satisfy_num = d[ey-1][ex-1] - d[ey-1][sx-1] - d[sy-1][ex-1] + d[sy-1][sx-1];
-        if(satisfy_num < (ey - sy) * (ex - sx) * 2 / 100) continue;
+        // if(satisfy_num < (ey - sy) * (ex - sx) * 2 / 100) continue;
         // cout << "satisfy num" << satisfy_num << endl;
 
         cv::Mat cropped(frame, cv::Rect(sx, sy, ex - sx, ey - sy));
