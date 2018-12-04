@@ -37,8 +37,8 @@ class WindowFinder(object):
         self.hog_feat       = True # HOG features on or off
 
         self.window_range_minx = 0.15
-        self.window_range_maxx = 0.65
-        self.window_range_miny = 0.1
+        self.window_range_maxx = 0.85
+        self.window_range_miny = 0.0
         self.window_range_maxy = 0.6
 
         # The locations of all the data.
@@ -423,8 +423,8 @@ class WindowFinder(object):
     def __make_windows(self):
         
         # define the minimum window size
-        x_min =[640*self.window_range_minx, 640*self.window_range_maxx] #coordinate, width
-        y_min =[480*self.window_range_miny, 480*self.window_range_maxy] #coordinate height
+        x_min =[640*self.window_range_minx, 640*self.window_range_maxx] #minimum window slide area sx, ex
+        y_min =[480*self.window_range_miny, 480*self.window_range_maxy] #minimum window slise area sx, ey
         xy_min = (80, 40)
 
         # define the maxium window size
@@ -440,10 +440,13 @@ class WindowFinder(object):
         x_range_w = x_max[0] - x_min[0]
         y_range_h = y_max[0] - y_min[0]
         for i in range(n):
+            #sx, ex
             x_start_stop =[int(x_min[0] + i*(x_max[0]-x_min[0])/(n-1)), 
                            int(x_min[1] + i*(x_max[1]-x_min[1])/(n-1))]
+            #sy, ey
             y_start_stop =[int(y_min[0] + i*(y_max[0]-y_min[0])/(n-1)), 
                            int(y_min[1] + i*(y_max[1]-y_min[1])/(n-1))]
+            #window width height
             xy_window    =[int(xy_min[0] + i*(xy_max[0]-xy_min[0])/(n-1)), 
                            int(xy_min[1] + i*(xy_max[1]-xy_min[1])/(n-1))]
             x.append(x_start_stop)
@@ -454,7 +457,7 @@ class WindowFinder(object):
         print(xy)
 
         windows1 = self.__slide_windows(x_start_stop= x[0], y_start_stop = y[0], 
-                            xy_window= xy[0], xy_overlap=(0.75, 0.5))
+                            xy_window= xy[0], xy_overlap=(0.5, 0.5))
         windows2 = self.__slide_windows(x_start_stop= x[1], y_start_stop = y[1], 
                             xy_window= xy[1], xy_overlap=(0.75, 0.5))
         windows3 = self.__slide_windows(x_start_stop= x[2], y_start_stop = y[2], 
@@ -462,6 +465,7 @@ class WindowFinder(object):
         windows4 = self.__slide_windows(x_start_stop= x[3], y_start_stop = y[3], 
                             xy_window= xy[3], xy_overlap=(0.75, 0.5))
         self.windows_list = list(windows1 + windows2 + windows3 + windows4)
+        print(len(windows1), len(windows2), len(windows3), len(windows4))
         pickle.dump( self.windows_list, open( "./cache/windows_list.p", "wb" ) )
         print("window_candidate :  {}".format(len(self.windows_list)))
 
