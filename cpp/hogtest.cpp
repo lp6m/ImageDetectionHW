@@ -15,27 +15,27 @@ using namespace cv;
 
 int main(int argc, const char* argv[]){
   Mat img, resized_img, gray;
-  img = cv::imread("../crop_test/crop/image83.png");
-  cv::resize(img, resized_img, cv::Size(64 ,32), INTER_LINEAR);
+  img = cv::imread("../crop_test/crop/image83.png"); 
+  cv::resize(img, resized_img, cv::Size(64 ,32), INTER_NEAREST);
   cv::Mat resized_hls;
-  cv::cvtColor(resized_img, resized_hls, CV_RGB2HLS);
+  cv::cvtColor(resized_img, resized_hls, CV_BGR2HSV);
 
   cv::Size spatial_size(8, 8);
   Mat spatial_rgb, spatial_hls;
   cv::resize(resized_img, spatial_rgb, spatial_size, INTER_LINEAR);
   cv::resize(resized_hls, spatial_hls, spatial_size, INTER_LINEAR);
   
-  double feature[744] = {0};
+  unsigned short feature[744] = {0};
   ravel(spatial_hls, feature);
   ravel(spatial_rgb, feature + 192);
   cv::imwrite("rgbcpp.bmp", resized_img);
-  hist(resized_hls, feature + 192 * 2);
-  hist(resized_img, feature + 192 * 2 + 36);
+  // hist(resized_hls, feature + 192 * 2);
+  // hist(resized_img, feature + 192 * 2 + 36);
 
-  cv::cvtColor(resized_img, gray, CV_RGB2GRAY);
-  lite_hog(gray, feature + 192 * 2 + 36 * 2);
+  cv::cvtColor(resized_img, gray, CV_BGR2GRAY);
+  lite_hog(gray, feature + 192 * 2);
 
-  for(int j = 0; j < 744; j++){
+  for(int j = 0; j < 672; j++){
       cout << feature[j] << endl;
   }
 }

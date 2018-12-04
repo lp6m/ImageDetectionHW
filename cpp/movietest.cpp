@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <vector>
+#include <string>
+#include <sstream>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
@@ -33,24 +35,26 @@ float test_one_image(Mat img){
   cv::cvtColor(resized_img, gray, CV_BGR2GRAY);
   lite_hog(gray, feature + 192 * 2);
 
-  float proba = randomforest_classifier(feature);
-  // float red_proba = (float)res.red / (res.not_red + res.red);
-  if(proba >= 0.65) cout << proba << endl;
-  return proba;
+  float red_proba = randomforest_classifier(feature);
+  return red_proba;
 }
 
 int main(int argc, const char* argv[])
 {
-  cv::VideoCapture cap(1);
-  if(!cap.isOpened()){
-    cout << "failed" << endl;
-    return -1;
-  }
+
   std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
-  while(1){
+  int candidate_max = -1;
+  for(int i = 1; i < 515; i++){
       t1 = std::chrono::system_clock::now();
+
+      ostringstream sout;
+      sout << std::setfill('0') << std::setw(4) << i;
+      string s = sout.str();
+      string filepath = "../video/outtest4/image_" + s + ".png";
+      string resultpath = "./ans/outtest4_2/image_" + s + ".png";
+      cout << filepath << endl;
       cv::Mat frame;
-      cap >> frame; // get a new frame from camera
+      frame = cv::imread(filepath);
       cv::Mat frame_copy = frame.clone();
 
       //prepare for removing arienai
@@ -70,7 +74,8 @@ int main(int argc, const char* argv[])
         }
       }
 
-      for(int i = 0; i < 278; i++){
+      int candidate_count = 0;
+      for(int i = 0; i < window_num; i++){
         cv::Mat out;
         int sy = w[i][0][0];
         int sx = w[i][1][0];
@@ -78,22 +83,28 @@ int main(int argc, const char* argv[])
         int ex = w[i][1][1];
         //remove arienai
         int satisfy_num = d[ey-1][ex-1] - d[ey-1][sx-1] - d[sy-1][ex-1] + d[sy-1][sx-1];
-        if(satisfy_num < (ey - sy) * (ex - sx) * 2 / 100) continue;
+        // if(satisfy_num < (ey - sy) * (ex - sx) * 2 / 100) continue;
         // cout << "satisfy num" << satisfy_num << endl;
-
+        candidate_count++;
         cv::Mat cropped(frame, cv::Rect(sx, sy, ex - sx, ey - sy));
         // cv::imwrite("crop.png", cropped);
         float proba = test_one_image(cropped);
 
-        if(proba >= 0.65) rectangle(frame_copy, Point(sx, sy), Point(ex, ey), Scalar(0,0,200), 3); //x,y //Scaler = B,G,R
+        if(proba >= 0.65){
+          rectangle(frame_copy, Point(sx, sy), Point(ex, ey), Scalar(0,0,200), 2); //x,y //Scaler = B,G,R
+          cv::putText(frame_copy, to_string(proba), cv::Point(sx+5,sy+5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255,0,0), 1, CV_AA);
+        }
       }
-      cv::imshow("window", frame_copy);
+      candidate_max = max(candidate_count, candidate_max);
+      cout << "candidate :" << candidate_count << " , max_candidate :" << candidate_max << endl; 
+      // cv::imshow("window", frame_copy);
+      cv::imwrite(resultpath, frame_copy);
 
-      int key = cv::waitKey(1);
-      if(key == 113)//qボタンが押されたとき
-      {
-          break;//whileループから抜ける．
-      }
+      // int key = cv::waitKey(1);
+      // if(key == 113)//qボタンが押されたとき
+      // {
+      //     break;//whileループから抜ける．
+      // }
       t2 = std::chrono::system_clock::now();
       //show fps
       double elapsed = (double)std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();

@@ -33,7 +33,7 @@ class WindowFinder(object):
 
         self.spatial_size   = (8, 8)
         self.spatial_feat   = True # Spatial features on or off
-        self.hist_feat      = True # Histogram features on or off
+        self.hist_feat      = False # Histogram features on or off
         self.hog_feat       = True # HOG features on or off
 
         self.window_range_minx = 0.15
@@ -308,7 +308,7 @@ class WindowFinder(object):
             
             ######### Classifier HOG Feature Prediction #########
             t1 = time.time()
-            test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32), cv2.INTER_LINEAR)
+            test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64, 32), cv2.INTER_NEAREST)
             # cv2.imwrite('resize/resized' + str(i) + '.png', test_img)
             # cv2.waitKey(0)
             t2 = time.time()
