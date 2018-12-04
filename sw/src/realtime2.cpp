@@ -28,7 +28,7 @@ bool imgout = false;
 float proba_thresh = 0.65;
 #define hwmode true
 #define checkmode false
-#define FEATURE_SIZE 64*3*2+12*3*2+72*4
+#define FEATURE_SIZE 64*3*2+72*4
 
 void check_window(){
     for(int i = 0; i < window_num; i++){
@@ -109,10 +109,11 @@ bool hwresultcheck(unsigned short* sw_feature, unsigned short* hw_feature, int s
     return flg;
 }
 
-float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
-    std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
+float test_one_window(Mat rgb, Mat hls, Mat gray, double* time0, double* time1, double* time2, double *time3){
+  std::chrono::system_clock::time_point  t0, t1, t2, t3, t4, t5, t6, t7;
     cv::Size spatial_size(8, 8);
-    Mat resized_rgb, resized_hls;
+	Mat resized_rgb, resized_hls;
+	t0 = std::chrono::system_clock::now();
     cv::resize(rgb, resized_rgb, spatial_size);
     cv::cvtColor(resized_rgb, resized_hls, CV_RGB2HLS);
 
@@ -124,42 +125,45 @@ float test_one_window(Mat rgb, Mat hls, Mat gray, double* time1, double* time2){
 	  for(int j = 0; j < 64; j++) cout << int(gray.ptr<uchar>(i)[j]) << ", ";
 	  cout << endl;
 	  }*/
-    t1 = std::chrono::system_clock::now();
     if(hwmode){
         memset(hw_feature, 0, sizeof(unsigned short) * FEATURE_SIZE);
         ravel(resized_hls, hw_feature);
         ravel(resized_rgb, hw_feature + 192);
 		t1 = std::chrono::system_clock::now();
         //create RGB histogram
-        for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, rgb.data + rgb.step * i, rgb.cols * 3 * sizeof(unsigned char));
+        /*for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, rgb.data + rgb.step * i, rgb.cols * 3 * sizeof(unsigned char));
         color_hist_hw(hw_feature + 192 * 2);
         //create HSV histogram
         for(int i = 0; i < 32; i++)  memcpy(hist_imageBuffer + 64 * i * 3, hls.data + hls.step * i, hls.cols * 3 * sizeof(unsigned char));
-        color_hist_hw(hw_feature + 192 * 2 + 36);
+        color_hist_hw(hw_feature + 192 * 2 + 36);*/
         //calculate HOG feature
 		t2 = std::chrono::system_clock::now();
 		for(int i = 0; i < 32; i++)  memcpy(hog_imageBuffer + 64 * i, gray.data + gray.step * i, gray.cols * sizeof(unsigned char));
 		//inputdatacheck2(hog_imageBuffer, gray);
-        calc_hog_hw(hw_feature + 192 * 2 + 36 * 2);
+        calc_hog_hw(hw_feature + 192 * 2);
 		t3 = std::chrono::system_clock::now();
     }
 	//t2 = std::chrono::system_clock::now();
+	*time0 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t1-t0).count()/1000;
 	*time1 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count()/1000;
 	*time2 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count()/1000;
     if(!hwmode || checkmode){
         memset(sw_feature, 0, sizeof(double) *584);
         ravel(resized_hls, sw_feature);
         ravel(resized_rgb, sw_feature + 192);
-        hist(rgb, sw_feature + 192 * 2);
-        hist(hls, sw_feature + 192 * 2 + 36);
-        lite_hog(gray, sw_feature + 192 * 2 + 36 * 2);
+        //hist(rgb, sw_feature + 192 * 2);
+        //hist(hls, sw_feature + 192 * 2 + 36);
+        lite_hog(gray, sw_feature + 192 * 2);
     }
 	if(checkmode) hwresultcheck(sw_feature, hw_feature, 0, FEATURE_SIZE);
     //Classify by Random Forest
     // clf_res res(0, 0);
+	t4 = std::chrono::system_clock::now();
     double proba;
     if(hwmode) proba = randomforest_classifier(hw_feature);
     else       proba = randomforest_classifier(sw_feature);
+	t5 = std::chrono::system_clock::now();
+	*time3 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t5-t4).count()/1000;
     // float red_proba = (float)res.red / (res.not_red + res.red);
     // cout << red_proba << endl;
     return proba;
@@ -172,9 +176,10 @@ void test_one_frame(Mat frame){
     Mat rgb(frame, cv::Rect(sx_min, sy_min, ex_max - sx_min, ey_max - sy_min));
     //2. convert to HLS image
     Mat hls;
-    cv::cvtColor(rgb, hls, CV_RGB2HLS);
+    cv::cvtColor(rgb, hls, CV_BGR2HSV);
     Mat gray;
-    cv::cvtColor(rgb, gray, CV_RGB2GRAY);
+    cv::cvtColor(rgb, gray, CV_BGR2GRAY);
+	t2 = std::chrono::system_clock::now();
     Mat rgb_each_window[4];
     Mat hls_each_window[4];
     Mat gray_each_window[4];
@@ -184,26 +189,28 @@ void test_one_frame(Mat frame){
         int width = *itr;
         cout << (float)WINDOW_WIDTH/(float)width << endl;
     //TODO:crop use frame
-        cv::resize(rgb, rgb_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width);
+        cv::resize(rgb, rgb_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width, INTER_NEAREST);
     }
     cnt = 0;
     for(auto itr = widthkind.begin(); itr != widthkind.end(); ++itr) {
         int width = *itr;
         //TODO:crop use frame
-        cv::resize(hls, hls_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width);
+        cv::resize(hls, hls_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width, INTER_NEAREST);
     }
     cnt = 0;
     for(auto itr = widthkind.begin(); itr != widthkind.end(); ++itr) {
         int width = *itr;
         //TODO:crop use frame
-        cv::resize(gray, gray_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width);
+        cv::resize(gray, gray_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width, INTER_NEAREST);
     }
-    t2 = std::chrono::system_clock::now();
+    t3 = std::chrono::system_clock::now();
     //4.crop for each window and classify for each window
     int test_count = 0;
     cnt = 0;
+	double time0 = 0;
     double time1 = 0;
     double time2 = 0;
+	double time3 = 0;
     for(auto itr = widthkind.begin(); itr != widthkind.end(); ++itr) {
         int width = *itr;
         auto windows = mp[width];
@@ -211,7 +218,7 @@ void test_one_frame(Mat frame){
             Mat rgb_test(rgb_each_window[cnt], cv::Rect(windows[i].first, windows[i].second, WINDOW_WIDTH, WINDOW_HEIGHT));
             Mat hls_test(hls_each_window[cnt], cv::Rect(windows[i].first, windows[i].second, WINDOW_WIDTH, WINDOW_HEIGHT));
             Mat gray_test(gray_each_window[cnt], cv::Rect(windows[i].first, windows[i].second, WINDOW_WIDTH, WINDOW_HEIGHT));
-            float result = test_one_window(rgb_test, hls_test, gray_test, &time1, &time2);
+            float result = test_one_window(rgb_test, hls_test, gray_test, &time0, &time1, &time2, &time3);
             // imwrite("wind/img" + to_string(test_count) + ".png", rgb_test);
             if(result >= proba_thresh && imgout){
                 cout << "found: " << proba_thresh << endl;
@@ -220,17 +227,21 @@ void test_one_frame(Mat frame){
         }
         cnt++;
     }
-    t3 = std::chrono::system_clock::now();
+    t4 = std::chrono::system_clock::now();
     // cout << "test_count" << test_count << endl;
 
     double tmp1 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count()/1000;
     double tmp2 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count()/1000;
-    double all = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t1).count()/1000;
-    cout << "preprocessing time : " << tmp1 << "[milisec]" << endl;
-    cout << "classify time : " << tmp2 << "[milisec]" << endl;
+	double tmp3 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count()/1000;
+    double all = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t4-t1).count()/1000;
+    cout << "preprocessing color convert time : " << tmp1 << "[milisec]" << endl;
+	cout << "preprocessing resize time : " << tmp2 << "[milisec]" << endl;
+    cout << "classify time : " << tmp3 << "[milisec]" << endl;
     cout << "all time : " << all << "[milisec]" << endl;
+	cout << "sw ravel time" << time0 << "[milisec]" << endl;
     cout << "hw hist time" << time1 << "[milisec]" << endl;
     cout << "hw hog time" << time2 << "[milisec]" << endl;
+	cout << "random forest time" << time3 << "[milisec]" << endl;
 }
 
 int main(int argc, const char* argv[]){
@@ -244,9 +255,21 @@ int main(int argc, const char* argv[]){
         int width = *itr;
         cout << width << ":" << mp[width].size() << endl;
     }
-    Mat img = imread("frame.png");
-    cout << img.cols << endl;
-    test_one_frame(img);
+	std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
+	cv::VideoCapture cap(1);
+	while(1){
+        t1 = std::chrono::system_clock::now();
+        cv::Mat frame;
+        cap >> frame; // get a new frame from camera
+        cv::Mat frame_copy = frame.clone();
+
+		test_one_frame(frame);
+		t2 = std::chrono::system_clock::now();
+		//show fps
+        double elapsed = (double)std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+        cout << "elapsed:" << elapsed << "[milisec]" << endl;
+        cout << "fps:" << 1000.0/elapsed << "[fps]" << endl;
+	}
 
     if(hwmode) hw_release();
     return 0;

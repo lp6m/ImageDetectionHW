@@ -15,7 +15,7 @@ using namespace std;
 using namespace cv;
 
 #define FEATURE_SIZE 64*3*2+12*3*2+72*4
-#define hwmode false
+#define hwmode true
 
 float test_one_image(Mat img){
   std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
@@ -58,13 +58,13 @@ float test_one_image(Mat img){
   }
 
   float proba = randomforest_classifier(feature);
-  if(proba >= 0.70) cout << proba << endl;
+  if(proba >= 0.65) cout << proba << endl;
   return proba;
 }
 
 int main(int argc, const char* argv[])
 {
-  cv::VideoCapture cap(0);
+  cv::VideoCapture cap(1);
   if(!cap.isOpened()){
     cout << "failed" << endl;
     return -1;
@@ -109,9 +109,9 @@ int main(int argc, const char* argv[])
         // cv::imwrite("crop.png", cropped);
         float proba = test_one_image(cropped);
 
-        if(proba >= 0.70) rectangle(frame_copy, Point(sx, sy), Point(ex, ey), Scalar(0,0,200), 3); //x,y //Scaler = B,G,R
+        if(proba >= 0.65) rectangle(frame_copy, Point(sx, sy), Point(ex, ey), Scalar(0,0,200), 3); //x,y //Scaler = B,G,R
       }
-      cv::imshow("window", frame_copy);
+      //cv::imshow("window", frame_copy);
 
       int key = cv::waitKey(1);
       if(key == 113)//qボタンが押されたとき
@@ -124,7 +124,7 @@ int main(int argc, const char* argv[])
       cout << "elapsed:" << elapsed << "[milisec]" << endl;
       cout << "fps:" << 1000.0/elapsed << "[fps]" << endl;
   }
-  cv::destroyAllWindows();
+  //cv::destroyAllWindows();
   if(hwmode) hw_release();
   return 0;
 }

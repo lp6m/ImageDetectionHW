@@ -178,17 +178,17 @@ int calc_hog_hw(unsigned short *dst){
 }
 
 int hw_setup(){
-	color_hist_init(hist0_ptr, "/amba_pl/color_hist@43c10000");
-	color_hist_init(hist1_ptr, "/amba_pl/color_hist@43c30000");
-	color_hist_init(hist2_ptr, "/amba_pl/color_hist@43c50000");
-	color_hist_init(hist3_ptr, "/amba_pl/color_hist@43c70000");
+	color_hist_init(hist0_ptr, "/amba_pl/color_hist@43c90000");
+	color_hist_init(hist1_ptr, "/amba_pl/color_hist@43cb0000");
+	color_hist_init(hist2_ptr, "/amba_pl/color_hist@43cd0000");
+	color_hist_init(hist3_ptr, "/amba_pl/color_hist@43cf0000");
 	hist_feature0 = assignToPhysicalUInt16(HIST_FEATURE0, 12*3);
 	hist_feature1 = assignToPhysicalUInt16(HIST_FEATURE1, 12*3);
 	hist_feature2 = assignToPhysicalUInt16(HIST_FEATURE2, 12*3);
 	hist_feature3 = assignToPhysicalUInt16(HIST_FEATURE3, 12*3);
 	hist_imageBuffer = assignToPhysicalUChar(HIST_IMAGEBUFFER,32*16*4*3); //get virtual address
 
-	calc_hog_init(hog0_ptr, "/amba_pl/calc_hog@43c00000");
+	calc_hog_init(hog0_ptr, "/amba_pl/calc_hog@43d10000");
 
 	hog_feature0 = assignToPhysicalUInt16(HOG_FEATURE0, 72 * 4);
 
