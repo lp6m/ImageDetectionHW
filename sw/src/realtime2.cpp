@@ -115,11 +115,11 @@ unsigned short hw_feature[FEATURE_SIZE*4] = {0};
 void test_four_window(float* result, int num, Mat rgb[4], Mat hls[4], Mat gray[4], double* time0, double* time1, double* time2, double *time3){
   std::chrono::system_clock::time_point  t0, t1, t2, t3, t4, t5, t6, t7;
     cv::Size spatial_size(8, 8);
-	Mat resized_rgb[4], resized_hls[4];
+	Mat spatial_rgb[4], spatial_hls[4];
 	t0 = std::chrono::system_clock::now();
     for(int i = 0; i < num; i++){
-        cv::resize(rgb[i], resized_rgb[i], spatial_size);
-        cv::cvtColor(resized_rgb[i], resized_hls[i], CV_RGB2HLS);
+        cv::resize(rgb[i], spatial_rgb[i], spatial_size);
+        cv::resize(hls[i], spatial_hls[i], spatial_size);
     }
 
     //store image feature of four windows
