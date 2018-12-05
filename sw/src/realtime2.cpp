@@ -16,6 +16,7 @@ using namespace std;
 using namespace cv;
 
 map<int, vector<pair<int, int> > > mp;
+map<int, vector<pair<int, int> > > original_mp;
 set<int> widthkind;
 
 int sx_min = 999;
@@ -28,6 +29,7 @@ bool imgout = false;
 float proba_thresh = 0.65;
 #define hwmode true
 #define checkmode false
+#define showdetailtime true
 #define FEATURE_SIZE 672
 
 void check_window(){
@@ -52,9 +54,11 @@ void check_window(){
         int ex = w[i][1][1];
 
         int original_width = ex - sx;
-        sy = (int)((float) (sy - sy_min) * (float)WINDOW_WIDTH/original_width);
-        sx = (int)((float) (sx - sx_min) * (float)WINDOW_WIDTH/original_width);
-        mp[original_width].push_back(make_pair(sx, sy));
+        int ssy = (int)((float) (sy - sy_min) * (float)WINDOW_WIDTH/original_width);
+        int ssx = (int)((float) (sx - sx_min) * (float)WINDOW_WIDTH/original_width);
+        mp[original_width].push_back(make_pair(ssx, ssy));
+        //store original coordinate
+        original_mp[original_width].push_back(make_pair(sx, sy));
     }
 }
 
@@ -121,16 +125,12 @@ void test_four_window(float* result, int num, Mat rgb[4], Mat hls[4], Mat gray[4
         cv::resize(rgb[i], spatial_rgb[i], spatial_size);
         cv::resize(hls[i], spatial_hls[i], spatial_size);
     }
-
-    //store image feature of four windows
-    //unsigned short sw_feature[FEATURE_SIZE*4] = {0};
-    //unsigned short hw_feature[FEATURE_SIZE*4] = {0};
     
     if(hwmode){
         memset(hw_feature, 0, sizeof(unsigned short) * FEATURE_SIZE * 4);
         for(int i = 0; i < num; i++){
-            ravel(resized_hls[i], i * FEATURE_SIZE + hw_feature);
-            ravel(resized_rgb[i], i * FEATURE_SIZE + hw_feature + 192);
+            ravel(spatial_hls[i], i * FEATURE_SIZE + hw_feature);
+            ravel(spatial_rgb[i], i * FEATURE_SIZE + hw_feature + 192);
         }
 		t1 = std::chrono::system_clock::now();
         //calculate HOG feature
@@ -149,14 +149,13 @@ void test_four_window(float* result, int num, Mat rgb[4], Mat hls[4], Mat gray[4
     if(!hwmode || checkmode){
         memset(sw_feature, 0, sizeof(double) * FEATURE_SIZE * 4);
         for(int i = 0; i < num; i++){
-            ravel(resized_hls[i], i * FEATURE_SIZE + sw_feature);
-            ravel(resized_rgb[i], i * FEATURE_SIZE + sw_feature + 192);
+            ravel(spatial_hls[i], i * FEATURE_SIZE + sw_feature);
+            ravel(spatial_rgb[i], i * FEATURE_SIZE + sw_feature + 192);
             lite_hog(gray[i], i * FEATURE_SIZE + sw_feature + 192 * 2);
         }
     }
 	if(checkmode) hwresultcheck(sw_feature, hw_feature, 0, FEATURE_SIZE * 4);
     //Classify by Random Forest
-    // clf_res res(0, 0);
 	t4 = std::chrono::system_clock::now();
     for(int i = 0; i < 4; i++){
         if(hwmode) result[i] = randomforest_classifier(i * FEATURE_SIZE + hw_feature);
@@ -164,10 +163,10 @@ void test_four_window(float* result, int num, Mat rgb[4], Mat hls[4], Mat gray[4
     }
 	t5 = std::chrono::system_clock::now();
 	*time3 += (long double)std::chrono::duration_cast<std::chrono::microseconds>(t5-t4).count()/1000;
-    // float red_proba = (float)res.red / (res.not_red + res.red);
-    // cout << red_proba << endl;
 }
-void test_one_frame(Mat frame){
+
+vector<pair<vector<int>, float>> test_one_frame(Mat frame){
+    vector<pair<vector<int>, float>> rst;
     std::chrono::system_clock::time_point  t1, t2, t3, t4, t5, t6, t7;
 
     t1 = std::chrono::system_clock::now();
@@ -186,8 +185,7 @@ void test_one_frame(Mat frame){
     int cnt = 0;
     for(auto itr = widthkind.begin(); itr != widthkind.end(); ++itr) {
         int width = *itr;
-        cout << (float)WINDOW_WIDTH/(float)width << endl;
-    //TODO:crop use frame
+        //TODO:crop use frame
         cv::resize(rgb, rgb_each_window[cnt++], cv::Size(), (float)WINDOW_WIDTH/(float)width , (float)WINDOW_WIDTH/(float)width, INTER_NEAREST);
     }
     cnt = 0;
@@ -227,7 +225,12 @@ void test_one_frame(Mat frame){
             // imwrite("wind/img" + to_string(test_count) + ".png", rgb_test);
             for(int j = 0; j < process_window_num; j++){
                 if(result[j] >= proba_thresh){
-                    cout << "found: " << proba_thresh << endl;
+                    int original_window_sx = original_mp[width][i*4+j].first;
+                    int original_window_sy = original_mp[width][i*4+j].second;
+                    int original_window_ex = original_window_sx + width;
+                    int original_window_ey = original_window_sy + width/2;
+                    vector<int> coord = {original_window_sx, original_window_sy, original_window_ex, original_window_ey};
+                    rst.push_back(make_pair(coord, result[j]));
                 }
             }
             test_count+=process_window_num;
@@ -241,14 +244,17 @@ void test_one_frame(Mat frame){
     double tmp2 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t3-t2).count()/1000;
 	double tmp3 = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t4-t3).count()/1000;
     double all = (long double)std::chrono::duration_cast<std::chrono::microseconds>(t4-t1).count()/1000;
-    cout << "preprocessing color convert time : " << tmp1 << "[milisec]" << endl;
-	cout << "preprocessing resize time : " << tmp2 << "[milisec]" << endl;
-    cout << "classify time : " << tmp3 << "[milisec]" << endl;
-    cout << "all time : " << all << "[milisec]" << endl;
-	cout << "sw ravel time" << time0 << "[milisec]" << endl;
-    cout << "hw hist time" << time1 << "[milisec]" << endl;
-    cout << "hw hog time" << time2 << "[milisec]" << endl;
-	cout << "random forest time" << time3 << "[milisec]" << endl;
+    if(showdetailtime){
+        cout << "preprocessing color convert time : " << tmp1 << "[milisec]" << endl;
+    	cout << "preprocessing resize time : " << tmp2 << "[milisec]" << endl;
+        cout << "classify time : " << tmp3 << "[milisec]" << endl;
+        cout << "all time : " << all << "[milisec]" << endl;
+    	cout << "sw ravel time" << time0 << "[milisec]" << endl;
+        cout << "hw hist time" << time1 << "[milisec]" << endl;
+        cout << "hw hog time" << time2 << "[milisec]" << endl;
+    	cout << "random forest time" << time3 << "[milisec]" << endl;
+    }
+    return rst;
 }
 
 int main(int argc, const char* argv[]){
@@ -270,7 +276,22 @@ int main(int argc, const char* argv[]){
         cap >> frame; // get a new frame from camera
         cv::Mat frame_copy = frame.clone();
 
-		test_one_frame(frame);
+        //process the current frame
+		auto rst = test_one_frame(frame);
+        //draw rectangle on detecting area
+        for(int j = 0; j < rst.size(); j++){
+            vector<int> coord = rst[j].first;
+            float proba = rst[j].second;
+            int sx = coord[0];
+            int sy = coord[1];
+            int ex = coord[2];
+            int ey = coord[3];
+            cout << sx << " " << sy << " " << ex << " " << ey << endl;
+            cout << proba << endl;
+            rectangle(frame_copy, Point(sx, sy), Point(ex, ey), Scalar(0,0,200), 2); //x,y //Scaler = B,G,R
+            cv::putText(frame_copy, to_string(proba), cv::Point(sx+5,sy+5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255,0,0), 1, CV_AA);
+        }
+        cv::imshow("result", frame_copy);
 		t2 = std::chrono::system_clock::now();
 		//show fps
         double elapsed = (double)std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
