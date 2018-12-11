@@ -43,9 +43,14 @@ int windcnt = 0;
 vector<pair<pair<int, int>, pair<int, int>>> windowvec;
 
 int cross_signal_range_sx = 180;
-int cross_signal_range_sy = 305;
-int cross_signal_range_ex = 440;
-int cross_signal_range_ey = 330;
+int cross_signal_range_sy = 297;
+int cross_signal_range_ex = 430;
+int cross_signal_range_ey = 327;
+
+// int cross_signal_range_sx = 180;
+// int cross_signal_range_sy = 345;
+// int cross_signal_range_ex = 440;
+// int cross_signal_range_ey = 380;
 int cross_signal_x_step = 15;
 int cross_signal_y_step = 5;
 int cross_signal_height_upper = 31;
